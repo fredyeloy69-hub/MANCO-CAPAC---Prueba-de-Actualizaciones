@@ -58,7 +58,7 @@ tr.en-eval td{background:#fef9e7!important}
 .c-res{width:120px}
 .c-fec{width:100px}
 .c-com{min-width:180px}
-.c-fec-rev{width:200px}
+.c-fec-rev{width:220px}
 .sw{position:relative;display:inline-block;width:44px;height:24px}
 .sw input{opacity:0;width:0;height:0}
 .sl{position:absolute;cursor:pointer;inset:0;background:#e5e7eb;border-radius:24px;transition:.25s}
@@ -71,7 +71,7 @@ input:checked+.sl:before{transform:translateX(20px)}
 .elbl.eval{color:#f59e0b}
 .inp-r,.inp-f,.inp-f-rev,.inp-c{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;color:inherit;font-family:inherit;resize:none;transition:border .2s,background .2s}
 .inp-r:focus,.inp-f:focus,.inp-f-rev:focus{outline:none;border-color:var(--azul);background:white}
-.inp-f-rev{background:#fef9e7;color:#92400e;font-weight:600;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:180px}
+.inp-f-rev{background:#fef9e7;color:#92400e;font-weight:600;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:200px}
 .inp-c{min-height:36px;max-height:80px;overflow-y:auto}
 .inp-r:disabled,.inp-f:disabled,.inp-c:disabled,.com-text:disabled{background:#f3f4f6;color:#6b7280;cursor:not-allowed}
 .com-cell{position:relative;min-height:40px;width:100%}
@@ -149,11 +149,12 @@ input:checked+.sl:before{transform:translateX(20px)}
 #confirm-box .btn-no{background:#f3f4f6;color:var(--gris);border:none;border-radius:8px;padding:9px 28px;font-size:13px;font-weight:700;cursor:pointer}
 #confirm-box .btn-si:hover{background:#166534}
 #confirm-box .btn-no:hover{background:#e5e7eb}
-.filtros-rapidos{display:flex;gap:6px;align-items:center}
+.filtros-rapidos{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .fq{border:2px solid var(--borde);background:white;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
 .fq.todos{color:var(--azul)} .fq.todos.act{background:var(--azul);color:white;border-color:var(--azul)}
-.fq.sub{color:var(--verde)} .fq.sub.act{background:var(--verde);color:white;border-color:var(--verde)}
+.fq.conf{color:#166534} .fq.conf.act{background:#166534;color:white;border-color:#166534}
 .fq.eval{color:#f59e0b} .fq.eval.act{background:#f59e0b;color:white;border-color:#f59e0b}
+.fq.sub{color:#2563eb} .fq.sub.act{background:#2563eb;color:white;border-color:#2563eb}
 .fq.pend{color:var(--rojo)} .fq.pend.act{background:var(--rojo);color:white;border-color:var(--rojo)}
 .rol-selector{display:flex;gap:10px;margin-bottom:14px}
 .rol-opt{flex:1;border:2px solid var(--borde);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:white}
@@ -250,9 +251,10 @@ input:checked+.sl:before{transform:translateX(20px)}
   </div>
   <button class="btn-clr" onclick="window.limFil()">✕ Limpiar</button>
   <div class="filtros-rapidos">
-    <button class="fq todos act" id="fq-todos" onclick="window.filtroRapido('todos')">Todos</button>
-    <button class="fq sub" id="fq-sub" onclick="window.filtroRapido('sub')">✅ Subsanados</button>
-    <button class="fq eval" id="fq-eval" onclick="window.filtroRapido('eval')">📤 En Evaluación</button>
+    <button class="fq todos act" id="fq-todos" onclick="window.filtroRapido('todos')">📋 Todos</button>
+    <button class="fq conf" id="fq-conf" onclick="window.filtroRapido('conf')">✅ Conformes</button>
+    <button class="fq eval" id="fq-eval" onclick="window.filtroRapido('eval')">📤 Evaluados</button>
+    <button class="fq sub" id="fq-sub" onclick="window.filtroRapido('sub')">📝 Subsanados</button>
     <button class="fq pend" id="fq-pend" onclick="window.filtroRapido('pend')">⛔ Pendientes</button>
   </div>
   <button class="btn-enviar" id="btnEnviar" onclick="window.enviarEvaluacion()">📤 Enviar para Evaluación</button>
@@ -262,7 +264,7 @@ input:checked+.sl:before{transform:translateX(20px)}
   <div class="stats-bar">
     <div class="stat t"><div class="n" id="ct">202</div><div class="l">TOTAL</div></div>
     <div class="stat s"><div class="n" id="cs">0</div><div class="l">CONFORMES</div></div>
-    <div class="stat e"><div class="n" id="ce">0</div><div class="l">EN EVAL.</div></div>
+    <div class="stat e"><div class="n" id="ce">0</div><div class="l">EVALUADOS</div></div>
     <div class="stat p"><div class="n" id="cp">202</div><div class="l">PENDIENTES</div></div>
   </div>
 </div>
@@ -334,9 +336,8 @@ window.cambiarUsuario = function() {
 
 function aplicarRolEnUI() {
   const esEvaluador = currentRol === 'evaluador';
-  const esProyectista = currentRol === 'proyectista';
   
-  // Botones de evaluador
+  // Botones de evaluador - SIEMPRE HABILITADOS si es evaluador
   document.querySelectorAll('.btn-eval').forEach(b => {
     if (!esEvaluador) {
       b.disabled = true;
@@ -349,7 +350,7 @@ function aplicarRolEnUI() {
     }
   });
   
-  // Checkboxes de subsanado
+  // Checkboxes de subsanado - BLOQUEADOS para evaluador
   document.querySelectorAll('.sw input[type=checkbox]').forEach(c => {
     if (esEvaluador) {
       c.disabled = true;
@@ -362,7 +363,7 @@ function aplicarRolEnUI() {
     }
   });
   
-  // Campos del proyectista (Responsable, Fecha, Comentario)
+  // Campos del proyectista - BLOQUEADOS para evaluador
   document.querySelectorAll('.inp-r, .inp-f, .c-com .com-text, .c-com .paste-hint').forEach(el => {
     if (esEvaluador) {
       el.disabled = true;
@@ -377,7 +378,7 @@ function aplicarRolEnUI() {
     }
   });
   
-  // Campos del evaluador (solo habilitados si es evaluador)
+  // Campos del evaluador - HABILITADOS solo para evaluador
   document.querySelectorAll('.c-eval .com-text, .c-eval .paste-hint').forEach(el => {
     if (esEvaluador) {
       el.disabled = false;
@@ -476,16 +477,20 @@ function updStats() {
     return r && !r.classList.contains('oculto');
   });
   let conformes = 0;
-  let enEval = 0;
+  let evaluados = 0;
   vis.forEach(o => {
     const s = E[o.id] || {};
-    if (s.eval_v === 'conforme') conformes++;
-    else if (s.estado === 'en_evaluacion') enEval++;
+    if (s.eval_v === 'conforme') {
+      conformes++;
+      evaluados++;
+    } else if (s.eval_v === 'reitera') {
+      evaluados++;
+    }
   });
   document.getElementById('ct').textContent = vis.length;
   document.getElementById('cs').textContent = conformes;
-  document.getElementById('ce').textContent = enEval;
-  document.getElementById('cp').textContent = vis.length - conformes - enEval;
+  document.getElementById('ce').textContent = evaluados;
+  document.getElementById('cp').textContent = vis.length - evaluados;
 }
 
 const SCOLS = {
@@ -545,15 +550,13 @@ function buildRow(o) {
   const estaEnEval = s.estado === 'en_evaluacion';
   const esConforme = s.eval_v === 'conforme';
   const esReitera = s.eval_v === 'reitera';
-  const estaBloqueada = estaEnEval || esConforme;
   
   // ─── CONSTRUIR OBSERVACIONES ANIDADAS ───
   let obsHtml = '';
   
-  // OBSERVACIÓN 1 (la original)
-  const obs1Status = esConforme ? '✅ CONFORME' : (estaEnEval ? '📤 EN EVALUACIÓN' : (s.ok ? '📝 SUBSANADO' : '⏳ PENDIENTE'));
-  const obs1StatusClase = esConforme ? 'conforme' : (estaEnEval ? 'eval' : (s.ok ? 'pendiente' : 'pendiente'));
-  const obs1Clase = esConforme ? 'obs-conforme' : (estaEnEval ? 'obs-eval' : (s.ok ? 'obs-pendiente' : 'obs-pendiente'));
+  const obs1Status = esConforme ? '✅ CONFORME' : (esReitera ? '🔄 SE REITERA' : (estaEnEval ? '📤 EN EVALUACIÓN' : (s.ok ? '📝 SUBSANADO' : '⏳ PENDIENTE')));
+  const obs1StatusClase = esConforme ? 'conforme' : (esReitera ? 'reitera' : (estaEnEval ? 'eval' : (s.ok ? 'pendiente' : 'pendiente')));
+  const obs1Clase = esConforme ? 'obs-conforme' : (esReitera ? 'obs-reitera' : (estaEnEval ? 'obs-eval' : (s.ok ? 'obs-pendiente' : 'obs-pendiente')));
   
   obsHtml += `<div class="obs-item ${obs1Clase}">
     <span class="obs-num">📝 OBSERVACIÓN 1:</span>
@@ -561,14 +564,11 @@ function buildRow(o) {
     <span class="obs-status ${obs1StatusClase}">${obs1Status}</span>
   </div>`;
   
-  // OBSERVACIONES ADICIONALES (cuando el evaluador reitera)
   if (s.obs_adicionales && s.obs_adicionales.length > 0) {
     s.obs_adicionales.forEach((obsAd, idx) => {
       const num = idx + 2;
       const estado = obsAd.estado || 'pendiente';
-      let statusText = '';
-      let statusClase = '';
-      let itemClase = '';
+      let statusText = '', statusClase = '', itemClase = '';
       
       if (estado === 'conforme') {
         statusText = '✅ CONFORME';
@@ -600,12 +600,14 @@ function buildRow(o) {
     });
   }
 
-  // Estado general de la observación
   let estadoLabel = '⏳ PENDIENTE';
   let estadoClase = 'pend';
   if (esConforme) {
     estadoLabel = '✅ CONFORME';
     estadoClase = 'ok';
+  } else if (esReitera) {
+    estadoLabel = '🔄 SE REITERA';
+    estadoClase = 'pend';
   } else if (estaEnEval) {
     estadoLabel = '📤 EN EVALUACIÓN';
     estadoClase = 'eval';
@@ -614,30 +616,21 @@ function buildRow(o) {
     estadoClase = 'ok';
   }
   
-  // Fecha de revisión del evaluador - CON HORA COMPLETA
+  // FECHA REVISIÓN - SOLO si el evaluador ha marcado CONFORME o REITERA
   let fechaRevision = '';
-  if (s.eval_fecha) {
-    // Si ya tiene fecha guardada, usarla
-    fechaRevision = s.eval_fecha;
-  } else if (s.revisiones && s.revisiones.length > 0) {
-    const ultima = s.revisiones[s.revisiones.length - 1];
-    if (ultima.fecha_revision) {
-      // Si tiene hora, conservarla
-      if (ultima.fecha_revision.includes('T')) {
-        const fecha = ultima.fecha_revision.split('T')[0];
-        const hora = ultima.fecha_revision.split('T')[1]?.slice(0,5) || '';
-        fechaRevision = fecha + ' ' + hora;
-      } else {
+  let mostrarFecha = false;
+  if (s.eval_v === 'conforme' || s.eval_v === 'reitera') {
+    mostrarFecha = true;
+    if (s.eval_fecha) {
+      fechaRevision = s.eval_fecha;
+    } else if (s.revisiones && s.revisiones.length > 0) {
+      const ultima = s.revisiones[s.revisiones.length - 1];
+      if (ultima.fecha_revision) {
         fechaRevision = ultima.fecha_revision;
       }
     }
   }
-  // Si no hay fecha, mostrar vacío (no mostrar fecha actual por defecto)
-  if (!fechaRevision) {
-    fechaRevision = '';
-  }
 
-  // Bitácora de cambios
   const log = s.log || [];
   const bitHtml = log.length ? `<div class="bitacora">${
     log.slice(-3).map(l => `<div class="${l.a==='SUB'?'bit-sub':'bit-rev'}">
@@ -645,7 +638,6 @@ function buildRow(o) {
     </div>`).join('')
   }</div>` : '';
 
-  // 📊 HISTORIAL DE REVISIONES
   const revs = s.revisiones || [];
   let revHtml = '';
   if (revs.length > 0) {
@@ -659,7 +651,6 @@ function buildRow(o) {
     revHtml += `</div>`;
   }
 
-  // Badge de revisión actual en la celda de estado
   const revBadge = s.revision_actual ? `<span style="font-size:9px;color:#6b7280;display:block;margin-top:2px">🔄 Rev.${s.revision_actual}</span>` : '';
 
   const imgsHtml = imgs.map((src,i) => `
@@ -674,11 +665,14 @@ function buildRow(o) {
       <button class="com-img-del" onclick="delImg('${o.id}',${i},'e')" title="Eliminar">✕</button>
     </div>`).join('');
 
-  // Determinar si mostrar la fecha de revisión
-  // Solo se muestra si el evaluador ya revisó (tiene eval_fecha o eval_v no está vacío)
-  const mostrarFecha = !!(s.eval_fecha || s.eval_v);
+  // Determinar estado para el filtro
+  let estadoFiltro = 'pendiente';
+  if (esConforme) estadoFiltro = 'conforme';
+  else if (esReitera) estadoFiltro = 'evaluado';
+  else if (estaEnEval) estadoFiltro = 'subsanado';
+  else if (s.ok) estadoFiltro = 'subsanado';
 
-  return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}" data-estado="${esConforme ? 'conforme' : estaEnEval ? 'eval' : s.ok ? 'subsanado' : 'pendiente'}">
+  return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}" data-estado="${estadoFiltro}">
     <td class="c-num">${o.num}</td>
     <td class="c-obs">
       ${obsHtml}
@@ -688,19 +682,19 @@ function buildRow(o) {
     <td class="c-est">
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px">
         <div style="display:flex;align-items:center;gap:6px">
-          <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)"><span class="sl"></span></label>
+          <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)" ${currentRol === 'evaluador' ? 'disabled' : ''}><span class="sl"></span></label>
           <span class="elbl ${estadoClase}" id="lbl_${o.id}">${estadoLabel}</span>
         </div>
         ${revBadge}
       </div>
     </td>
-    <td class="c-res"><input class="inp-r" type="text" value="${rv}" placeholder="Nombre..." onblur="window._sf('${o.id}','resp',this.value)"></td>
-    <td class="c-fec"><input class="inp-f" type="date" value="${s.fecha||''}" onchange="window._sf('${o.id}','fecha',this.value)" style="cursor:pointer"></td>
+    <td class="c-res"><input class="inp-r" type="text" value="${rv}" placeholder="Nombre..." onblur="window._sf('${o.id}','resp',this.value)" ${currentRol === 'evaluador' ? 'disabled' : ''}></td>
+    <td class="c-fec"><input class="inp-f" type="date" value="${s.fecha||''}" onchange="window._sf('${o.id}','fecha',this.value)" style="cursor:pointer" ${currentRol === 'evaluador' ? 'disabled' : ''}></td>
     <td class="c-com">
       <div class="com-cell">
         <textarea class="com-text" placeholder="Comentario… o pega captura con Ctrl+V"
           onblur="window._sf('${o.id}','coment',this.value)"
-          onpaste="window._paste(event,'${o.id}','u')">${cv}</textarea>
+          onpaste="window._paste(event,'${o.id}','u')" ${currentRol === 'evaluador' ? 'disabled' : ''}>${cv}</textarea>
         <div class="paste-hint">📸 Ctrl+V para pegar captura</div>
         <div class="com-imgs" id="imgs_${o.id}">${imgsHtml}</div>
       </div>
@@ -709,19 +703,19 @@ function buildRow(o) {
       <div class="eval-cell">
         <div class="eval-veredicto">
           <button class="btn-eval ${s.eval_v==='conforme'?'ev-conf-act':'ev-conf'}"
-            data-v="conforme" onclick="window._evalV('${o.id}','conforme')">✔ CONFORME</button>
+            data-v="conforme" onclick="window._evalV('${o.id}','conforme')" ${currentRol !== 'evaluador' ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>✔ CONFORME</button>
           <button class="btn-eval ${s.eval_v==='reitera'?'ev-reit-act':'ev-reit'}"
-            data-v="reitera" onclick="window._evalV('${o.id}','reitera')">↩ SE REITERA</button>
+            data-v="reitera" onclick="window._evalV('${o.id}','reitera')" ${currentRol !== 'evaluador' ? 'disabled style="opacity:.4;cursor:not-allowed"' : ''}>↩ SE REITERA</button>
         </div>
         ${s.eval_nombre ? `<div class="eval-info"><span style="font-size:10px;color:#92400e;font-weight:600">Revisado por: ${s.eval_nombre}<br>${s.eval_fecha||''}</span></div>` : ''}
         <textarea class="com-text" placeholder="Comentario evaluador… o Ctrl+V"
           onblur="window._sf('${o.id}','eval_coment',this.value)"
-          onpaste="window._paste(event,'${o.id}','e')">${ev}</textarea>
+          onpaste="window._paste(event,'${o.id}','e')" ${currentRol !== 'evaluador' ? 'disabled style="background:#f3f4f6;color:#6b7280;cursor:not-allowed;opacity:.7"' : ''}>${ev}</textarea>
         <div class="paste-hint">📸 Ctrl+V para pegar captura</div>
         <div class="com-imgs" id="eimgs_${o.id}">${eimgsHtml}</div>
       </div>
     </td>
-    <td class="c-fec-rev"><input class="inp-f-rev" type="text" value="${mostrarFecha ? fechaRevision : ''}" readonly style="background:#fef9e7;color:#92400e;font-weight:600;cursor:default;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:180px"></td>
+    <td class="c-fec-rev"><input class="inp-f-rev" type="text" value="${mostrarFecha ? fechaRevision : ''}" readonly style="background:#fef9e7;color:#92400e;font-weight:600;cursor:default;width:100%;border:1px solid #d1d5db;border-radius:4px;padding:4px 6px;font-size:12px;min-width:200px"></td>
   </tr>`;
 }
 
@@ -775,7 +769,6 @@ function evaluarConRevision(id, veredicto, comentario) {
   ultima.fecha_revision = fechaHoraCompleta;
   ultima.comentario_evaluador = comentario || '';
   
-  // Guardar fecha de evaluación en el campo principal
   obs.eval_fecha = fechaHoraCompleta;
   obs.eval_nombre = currentUser;
   
@@ -825,7 +818,8 @@ window.enviarEvaluacion = async function() {
   
   const subsanadas = DATA.filter(o => {
     const s = E[o.id] || {};
-    return s.ok && s.eval_v !== 'conforme' && s.estado !== 'en_evaluacion';
+    // Solo observaciones que están SUBSANADAS (ok=true) y NO EVALUADAS (eval_v vacío)
+    return s.ok && !s.eval_v && s.estado !== 'en_evaluacion';
   });
   
   if (subsanadas.length === 0) {
@@ -864,7 +858,7 @@ function actualizarBotonEnviar() {
   }
   const subsanadas = DATA.filter(o => {
     const s = E[o.id] || {};
-    return s.ok && s.eval_v !== 'conforme' && s.estado !== 'en_evaluacion';
+    return s.ok && !s.eval_v && s.estado !== 'en_evaluacion';
   });
   btn.disabled = subsanadas.length === 0;
   btn.textContent = `📤 Enviar para Evaluación (${subsanadas.length})`;
@@ -878,8 +872,9 @@ window._tog = async function(id, v) {
   }
   
   const s = E[id] || {};
-  if (s.estado === 'en_evaluacion' || s.eval_v === 'conforme') {
-    notif('Esta observación está en evaluación o ya fue conforme', '#991b1b');
+  // Si ya está en evaluación o ya tiene veredicto, no se puede cambiar
+  if (s.estado === 'en_evaluacion' || s.eval_v) {
+    notif('Esta observación ya está en evaluación o fue evaluada', '#991b1b');
     return;
   }
   
@@ -922,8 +917,8 @@ window._sf = function(id, f, v) {
     notif('El evaluador no puede modificar datos del proyectista', '#991b1b');
     return;
   }
-  if (s.estado === 'en_evaluacion' || s.eval_v === 'conforme') {
-    notif('No se puede modificar en evaluación o conforme', '#991b1b');
+  if (s.estado === 'en_evaluacion' || s.eval_v) {
+    notif('No se puede modificar en evaluación o ya evaluado', '#991b1b');
     return;
   }
   saveField(id, f, v);
@@ -937,41 +932,37 @@ window._evalV = async function(id, v) {
   }
   
   const obs = E[id] || {};
-  if (obs.estado !== 'en_evaluacion' && obs.eval_v !== 'conforme' && obs.eval_v !== 'reitera') {
-    notif('Esta observación no está en evaluación', '#991b1b');
+  
+  // Si ya está conforme o reitera, no se puede cambiar
+  if (obs.eval_v) {
+    if (obs.eval_v === 'conforme') {
+      notif('Esta observación ya está CONFORME', '#166534');
+    } else {
+      notif('Esta observación ya fue REITERADA', '#991b1b');
+    }
     return;
   }
   
-  if (obs.eval_v === 'conforme' && v !== 'conforme') {
-    notif('Esta observación ya está CONFORME, no se puede cambiar', '#991b1b');
+  // El evaluador puede marcar cualquier observación que NO esté conforme ni reiterada
+  // Incluso si está en estado "pendiente" o "subsanado"
+  const comentarioEval = (E[id] || {}).eval_coment || '';
+  
+  // Verificar si es "SE REITERA" y no hay comentario
+  if (v === 'reitera' && (!comentarioEval || !comentarioEval.trim())) {
+    notif('⚠ Para REITERAR debes escribir un comentario con la nueva observación', '#f59e0b');
     return;
   }
   
-  const actual = obs.eval_v;
-  const nuevo = actual === v ? '' : v;
-  
-  if (actual && !nuevo) {
-    const ok = await pedirConfirm('¿Quitar veredicto?', '¿Deseas quitar el veredicto actual?');
-    if (!ok) return;
-    saveField(id, 'eval_v', '');
-    saveField(id, 'estado', 'pendiente');
-    notif('Veredicto quitado', '#6b7280');
-    build();
-    return;
-  }
-  
-  if (nuevo) {
-    const comentarioEval = (E[id] || {}).eval_coment || '';
-    evaluarConRevision(id, v, comentarioEval);
-    build();
-  }
+  evaluarConRevision(id, v, comentarioEval);
+  build();
 };
 
 // ─── FILTROS RAPIDOS ───
 window.filtroRapido = function(tipo) {
   document.getElementById('fq-todos').classList.toggle('act', tipo==='todos');
-  document.getElementById('fq-sub').classList.toggle('act', tipo==='sub');
+  document.getElementById('fq-conf').classList.toggle('act', tipo==='conf');
   document.getElementById('fq-eval').classList.toggle('act', tipo==='eval');
+  document.getElementById('fq-sub').classList.toggle('act', tipo==='sub');
   document.getElementById('fq-pend').classList.toggle('act', tipo==='pend');
   window.filtrar();
 };
@@ -1065,294 +1056,13 @@ function actualizarFiltroUsuarios() {
   });
 }
 
-// ─── EXPORTAR PDF ───
-window.exportarPDF = async function() {
-  notif('Generando PDF...', '#1e40af');
-  if (!window.jspdf) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-  const fecha = new Date().toLocaleDateString('es-PE');
-  const W = doc.internal.pageSize.getWidth();
-  const PAGE_H = doc.internal.pageSize.getHeight();
-  const MARGIN = 8;
-  const INNER  = W - MARGIN * 2;
-  const AZUL   = [26, 79, 138];
-  const VERDE  = [26, 122, 69];
-  const ROJO   = [192, 57, 43];
-  const GRIS   = [107, 114, 128];
-  const BLANCO = [255, 255, 255];
-  const FVERDE = [230, 247, 237];
-  const FROJO  = [253, 236, 234];
-  const hayImgs = DATA.some(o => (E[o.id]||{}).imgs && E[o.id].imgs.length > 0);
-  const cols = hayImgs
-    ? [ ['#',8,'c'], ['OBSERVACION',80,'l'], ['ESTADO',22,'l'],
-        ['RESPONSABLE',28,'l'], ['FECHA LEV.',20,'l'], ['COMENTARIO',45,'l'], ['EVALUADOR',38,'l'], ['FECHA REV.',20,'l'], ['CAPTURA',40,'l'] ]
-    : [ ['#',8,'c'], ['OBSERVACION',95,'l'], ['ESTADO',22,'l'],
-        ['RESPONSABLE',32,'l'], ['FECHA LEV.',22,'l'], ['COMENTARIO',60,'l'], ['EVALUADOR',42,'l'], ['FECHA REV.',22,'l'] ];
-  doc.setFillColor(...AZUL);
-  doc.rect(0, 0, W, 18, 'F');
-  doc.setFontSize(11); doc.setTextColor(...BLANCO); doc.setFont('helvetica','bold');
-  doc.text('FICHA DE OBSERVACIONES N01 - INSTALACIONES SANITARIAS', W/2, 8, {align:'center'});
-  doc.setFontSize(7); doc.setFont('helvetica','normal');
-  doc.text(`I.E. PUBLICA MILITAR "INCA MANCO CAPAC" - TOTORANI - PUNO  |  Rev. 01: 15.10.25  |  Generado: ${fecha}`, W/2, 14, {align:'center'});
-  const total = DATA.length;
-  const sub   = DATA.filter(o => (E[o.id]||{}).eval_v === 'conforme').length;
-  const pend  = total - sub;
-  const pct   = Math.round(sub/total*100);
-  doc.setFillColor(235,244,255);
-  doc.rect(MARGIN, 20, INNER, 9, 'F');
-  doc.setFontSize(9); doc.setFont('helvetica','bold');
-  doc.setTextColor(...AZUL);  doc.text(`TOTAL: ${total}`, MARGIN+5, 26);
-  doc.setTextColor(...VERDE); doc.text(`CONFORMES: ${sub}`, MARGIN+55, 26);
-  doc.setTextColor(...ROJO);  doc.text(`PENDIENTES: ${pend}`, MARGIN+120, 26);
-  doc.setTextColor(50,50,50); doc.setFont('helvetica','normal');
-  doc.text(`Progreso: ${pct}%`, MARGIN+190, 26);
-  let y = 31;
-  function miniHeader() {
-    doc.setFillColor(...AZUL);
-    doc.rect(0,0,W,9,'F');
-    doc.setFontSize(7); doc.setTextColor(...BLANCO); doc.setFont('helvetica','bold');
-    doc.text('FICHA OBSERVACIONES - INCA MANCO CAPAC', W/2, 6.5, {align:'center'});
-    y = 12;
-  }
-  function drawColHeaders() {
-    doc.setFillColor(225,232,240);
-    doc.rect(MARGIN, y, INNER, 6, 'F');
-    doc.setDrawColor(180,190,200); doc.setLineWidth(0.2);
-    let cx = MARGIN;
-    cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+6); });
-    doc.setFontSize(6); doc.setTextColor(...GRIS); doc.setFont('helvetica','bold');
-    let x = MARGIN;
-    cols.forEach(([label, w, align]) => {
-      const tx = align==='c' ? x+w/2 : x+1.5;
-      doc.text(label, tx, y+4.3, {align: align==='c'?'center':'left', maxWidth: w-2});
-      x += w;
-    });
-    y += 6;
-  }
-  function cellText(txt, cx, cy, cw, ch, opts={}) {
-    if (!txt) return;
-    const lines = doc.splitTextToSize(String(txt), cw - 3);
-    const lineH = 3.4;
-    const maxLines = Math.floor((ch - 2) / lineH);
-    const visible = lines.slice(0, maxLines);
-    doc.text(visible, cx + (opts.center ? cw/2 : 1.5), cy + 3.8,
-      { align: opts.center ? 'center' : 'left' });
-  }
-  let lastSec = null;
-  let lastSub = null;
-  for (const o of DATA) {
-    const s = E[o.id] || {};
-    const imgs = s.imgs || [];
-    let fechaRevision = '';
-    if (s.eval_fecha) {
-      fechaRevision = s.eval_fecha;
-    } else if (s.revisiones && s.revisiones.length > 0) {
-      const ultima = s.revisiones[s.revisiones.length - 1];
-      if (ultima.fecha_revision) {
-        fechaRevision = ultima.fecha_revision;
-      }
-    }
-    
-    let obsTexto = 'OBSERVACIÓN 1: ' + o.obs;
-    if (s.obs_adicionales && s.obs_adicionales.length > 0) {
-      s.obs_adicionales.forEach((obsAd, idx) => {
-        const num = idx + 2;
-        const estado = obsAd.estado || 'pendiente';
-        let status = estado === 'conforme' ? 'CONFORME' : estado === 'reitera' ? 'REITERADO' : 'PENDIENTE';
-        obsTexto += '\nOBSERVACIÓN ' + num + ': ' + obsAd.texto + ' [' + status + ']';
-      });
-    }
-    
-    const obsW  = cols[1][1] - 3;
-    const comW  = cols[hayImgs?5:5][1] - 3;
-    const obsL  = doc.splitTextToSize(obsTexto, obsW).length;
-    const comL  = doc.splitTextToSize(s.coment||'', comW).length;
-    const textH = Math.max(obsL, comL, 1) * 3.4 + 4;
-    const imgH  = imgs.length > 0 ? 28 : 0;
-    const rowH  = Math.min(Math.max(textH, imgH, 9), 45);
-    if (o.section !== lastSec) {
-      if (y + 20 > PAGE_H - 8) { doc.addPage(); miniHeader(); }
-      const secColors = {
-        'PLANOS':[26,79,138],
-        'MEMORIA DE CALCULO':[26,106,74],
-        'MEMORIA DESCRIPTIVA':[122,74,26],
-        'ESPECIFICACIONES TECNICAS':[106,26,106]
-      };
-      const sc = secColors[o.section.normalize('NFD').replace(/[\u0300-\u036f]/g,'')] || AZUL;
-      doc.setFillColor(...sc);
-      doc.rect(MARGIN, y, INNER, 7, 'F');
-      doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(...BLANCO);
-      doc.text(`SECCION: ${o.section}`, MARGIN+3, y+5);
-      y += 7; lastSec = o.section; lastSub = null;
-      drawColHeaders();
-    }
-    if (o.subsection && o.subsection !== lastSub) {
-      if (y + 12 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
-      doc.setFillColor(219,234,254);
-      doc.rect(MARGIN, y, INNER, 5.5, 'F');
-      doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...AZUL);
-      doc.text(`  ${o.subsection}`, MARGIN+2, y+4);
-      y += 5.5; lastSub = o.subsection;
-    }
-    if (y + rowH + 5 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
-    doc.setFillColor(...(s.ok ? FVERDE : FROJO));
-    doc.rect(MARGIN, y, INNER, rowH, 'F');
-    doc.setDrawColor(200,210,220); doc.setLineWidth(0.15);
-    let cx = MARGIN;
-    cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+rowH); });
-    doc.setDrawColor(190,200,210); doc.setLineWidth(0.25);
-    doc.line(MARGIN, y+rowH, MARGIN+INNER, y+rowH);
-    doc.setFontSize(7); doc.setFont('helvetica','normal');
-    doc.setTextColor(31,41,55);
-    let x = MARGIN;
-    doc.setFont('helvetica','bold');
-    doc.setTextColor(...AZUL);
-    cellText(o.num, x, y, cols[0][1], rowH, {center:true});
-    x += cols[0][1];
-    doc.setFont('helvetica','normal');
-    doc.setTextColor(31,41,55);
-    cellText(obsTexto, x, y, cols[1][1], rowH);
-    x += cols[1][1];
-    doc.setFont('helvetica','bold');
-    if (s.eval_v === 'conforme') {
-      doc.setTextColor(...VERDE);
-      cellText('CONFORME', x, y, cols[2][1], rowH);
-    } else if (s.estado === 'en_evaluacion') {
-      doc.setTextColor(245,158,11);
-      cellText('EN EVAL.', x, y, cols[2][1], rowH);
-    } else if (s.ok) {
-      doc.setTextColor(59,130,246);
-      cellText('SUBSANADO', x, y, cols[2][1], rowH);
-    } else {
-      doc.setTextColor(...ROJO);
-      cellText('PENDIENTE', x, y, cols[2][1], rowH);
-    }
-    x += cols[2][1];
-    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
-    cellText(s.resp||'-', x, y, cols[3][1], rowH);
-    x += cols[3][1];
-    cellText(s.fecha||'-', x, y, cols[4][1], rowH);
-    x += cols[4][1];
-    cellText(s.coment||'', x, y, cols[5][1], rowH);
-    x += cols[5][1];
-    cellText(s.eval_nombre||'', x, y, cols[6][1], rowH);
-    x += cols[6][1];
-    cellText(fechaRevision||'-', x, y, cols[7][1], rowH);
-    x += cols[7][1];
-    if (hayImgs && imgs.length > 0) {
-      let ix = x + 1;
-      for (let i = 0; i < Math.min(imgs.length, 2); i++) {
-        try {
-          const iw = 18, ih = rowH - 2;
-          doc.addImage(imgs[i], 'JPEG', ix, y+1, iw, ih);
-          ix += iw + 1;
-        } catch(e) {}
-      }
-    }
-    y += rowH;
-  }
-  const totalPages = doc.getNumberOfPages();
-  for (let p = 1; p <= totalPages; p++) {
-    doc.setPage(p);
-    doc.setFillColor(245,247,250);
-    doc.rect(0, PAGE_H-7, W, 7, 'F');
-    doc.setFontSize(6.5); doc.setTextColor(...GRIS); doc.setFont('helvetica','normal');
-    doc.text(`Pagina ${p} de ${totalPages}  |  Ficha Observaciones N01 - I.E. Inca Manco Capac`, W/2, PAGE_H-2.5, {align:'center'});
-  }
-  const fechaArchivo = new Date().toISOString().slice(0,10);
-  doc.save(`Observaciones_IncaMancoCapac_${fechaArchivo}.pdf`);
-  notif('PDF descargado correctamente', '#166534');
-};
-
-// ─── EXPORTAR EXCEL ───
-window.exportarExcel = async function() {
-  notif('⏳ Generando Excel…', '#1e40af');
-  if (!window.XLSX) {
-    await new Promise((res, rej) => {
-      const s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-      s.onload = res; s.onerror = rej;
-      document.head.appendChild(s);
-    });
-  }
-  const rows = [['#', 'SECCIÓN', 'SUBSECCIÓN', 'OBSERVACIÓN 1', 'OBSERVACIÓN 2', 'OBSERVACIÓN 3', 'OBSERVACIÓN 4', 'ESTADO GENERAL', 'REVISIÓN ACTUAL', 'RESPONSABLE', 'FECHA LEVANTAMIENTO', 'FECHA REVISIÓN', 'EVALUADOR', 'COMENTARIO']];
-  DATA.forEach(o => {
-    const s = E[o.id] || {};
-    let estado = 'PENDIENTE';
-    if (s.eval_v === 'conforme') estado = 'CONFORME ✅';
-    else if (s.estado === 'en_evaluacion') estado = 'EN EVALUACIÓN 📤';
-    else if (s.ok) estado = 'SUBSANADO 📝';
-    
-    let fechaRevision = '';
-    if (s.eval_fecha) {
-      fechaRevision = s.eval_fecha;
-    } else if (s.revisiones && s.revisiones.length > 0) {
-      const ultima = s.revisiones[s.revisiones.length - 1];
-      if (ultima.fecha_revision) {
-        fechaRevision = ultima.fecha_revision;
-      }
-    }
-    
-    let obs2 = '', obs3 = '', obs4 = '';
-    if (s.obs_adicionales && s.obs_adicionales.length > 0) {
-      s.obs_adicionales.forEach((obsAd, idx) => {
-        const num = idx + 2;
-        const status = obsAd.estado === 'conforme' ? ' [CONFORME]' : obsAd.estado === 'reitera' ? ' [REITERADO]' : ' [PENDIENTE]';
-        if (num === 2) obs2 = obsAd.texto + status;
-        else if (num === 3) obs3 = obsAd.texto + status;
-        else if (num === 4) obs4 = obsAd.texto + status;
-      });
-    }
-    
-    rows.push([
-      o.num,
-      o.section,
-      o.subsection || '',
-      o.obs,
-      obs2,
-      obs3,
-      obs4,
-      estado,
-      s.revision_actual || 0,
-      s.resp || '',
-      s.fecha || '',
-      fechaRevision || '',
-      s.eval_nombre || '',
-      s.coment || ''
-    ]);
-  });
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [
-    {wch:5},{wch:22},{wch:28},{wch:50},
-    {wch:50},{wch:50},{wch:50},
-    {wch:15},{wch:12},{wch:20},{wch:18},{wch:18},{wch:20},{wch:40}
-  ];
-  const range = XLSX.utils.decode_range(ws['!ref']);
-  for (let C = range.s.c; C <= range.e.c; C++) {
-    const cell = ws[XLSX.utils.encode_cell({r:0, c:C})];
-    if (cell) cell.s = { font:{bold:true}, fill:{fgColor:{rgb:'1A4F8A'}}, font:{bold:true,color:{rgb:'FFFFFF'}} };
-  }
-  XLSX.utils.book_append_sheet(wb, ws, 'Observaciones');
-  const fecha = new Date().toISOString().slice(0,10);
-  XLSX.writeFile(wb, `Observaciones_IncaMancoCapac_${fecha}.xlsx`);
-  notif('✅ Excel descargado', '#166534');
-};
-
 // ─── FILTROS ───
 window.filtrar = function() {
   const sec  = document.getElementById('fs').value;
   let est = '';
-  if (document.getElementById('fq-sub').classList.contains('act')) est = 'sub';
+  if (document.getElementById('fq-conf').classList.contains('act')) est = 'conf';
   else if (document.getElementById('fq-eval').classList.contains('act')) est = 'eval';
+  else if (document.getElementById('fq-sub').classList.contains('act')) est = 'sub';
   else if (document.getElementById('fq-pend').classList.contains('act')) est = 'pend';
   else est = '';
   const usr  = document.getElementById('fu').value.toLowerCase();
@@ -1369,12 +1079,14 @@ window.filtrar = function() {
     const fStr  = r.dataset.fecha || s.fecha || '';
     let show = true;
     if (sec && r.dataset.sec !== sec) show = false;
-    if (est === 'sub') {
-      if (estado !== 'subsanado' && estado !== 'conforme') show = false;
+    if (est === 'conf') {
+      if (estado !== 'conforme') show = false;
     } else if (est === 'eval') {
-      if (estado !== 'eval') show = false;
+      if (estado !== 'evaluado') show = false;
+    } else if (est === 'sub') {
+      if (estado !== 'subsanado') show = false;
     } else if (est === 'pend') {
-      if (estado === 'conforme') show = false;
+      if (estado === 'conforme' || estado === 'evaluado') show = false;
     }
     if (usr && resp !== usr) show = false;
     if (txt) {
@@ -1410,8 +1122,9 @@ window.limFil = function() {
   document.getElementById('ff').value = '';
   document.getElementById('ft').value = '';
   document.getElementById('fq-todos').classList.add('act');
-  document.getElementById('fq-sub').classList.remove('act');
+  document.getElementById('fq-conf').classList.remove('act');
   document.getElementById('fq-eval').classList.remove('act');
+  document.getElementById('fq-sub').classList.remove('act');
   document.getElementById('fq-pend').classList.remove('act');
   window.filtrar();
 };
