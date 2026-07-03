@@ -3,35 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Observaciones - CORREGIDO</title>
+    <title>Gestión de Observaciones - VERSIÓN CORREGIDA</title>
     <style>
-        * { box-sizing: border-box; }
+        /* ===== RESET Y ESTILOS GLOBALES ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            max-width: 900px;
-            margin: 40px auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
             padding: 20px;
             background: #f0f2f5;
+            min-height: 100vh;
         }
 
-        h1 {
-            color: #2c3e50;
-            border-bottom: 3px solid #3498db;
-            padding-bottom: 15px;
+        /* ===== ENCABEZADO ===== */
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header .subtitle {
+            opacity: 0.9;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        .header .badge-version {
+            background: #27ae60;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        /* ===== OBSERVACIONES ===== */
         .observacion {
             background: white;
             border: 1px solid #e1e8ed;
             padding: 25px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
             transition: all 0.3s ease;
         }
 
         .observacion:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            transform: translateY(-2px);
         }
 
         .obs-header {
@@ -39,34 +76,62 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .obs-titulo {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: 700;
             color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .obs-id {
+            background: #3498db;
+            color: white;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        .obs-fecha {
+            color: #7f8c8d;
+            font-size: 13px;
+            background: #f8f9fa;
+            padding: 4px 12px;
+            border-radius: 20px;
         }
 
         .obs-descripcion {
             color: #555;
-            margin: 10px 0 15px 0;
-            padding: 10px;
+            margin: 10px 0 18px 0;
+            padding: 14px 18px;
             background: #f8f9fa;
-            border-radius: 6px;
+            border-radius: 8px;
             border-left: 4px solid #3498db;
+            font-size: 15px;
+            line-height: 1.5;
         }
 
-        /* ===== CHECKBOX CONFORME ===== */
+        .obs-descripcion strong {
+            color: #2c3e50;
+        }
+
+        /* ===== CHECKBOX CONFORME (TOGGLE) ===== */
         .conforme-toggle {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 15px;
+            gap: 14px;
+            padding: 12px 20px;
             background: #f8f9fa;
-            border-radius: 8px;
+            border-radius: 10px;
             border: 2px solid #e1e8ed;
             transition: all 0.3s ease;
             cursor: pointer;
+            user-select: none;
         }
 
         .conforme-toggle:hover {
@@ -75,10 +140,11 @@
         }
 
         .conforme-toggle input[type="checkbox"] {
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             cursor: pointer;
             accent-color: #27ae60;
+            flex-shrink: 0;
         }
 
         .conforme-toggle label {
@@ -86,17 +152,21 @@
             font-size: 16px;
             cursor: pointer;
             color: #2c3e50;
-            user-select: none;
+            flex: 1;
         }
 
         .conforme-toggle .estado-badge {
-            padding: 4px 14px;
+            padding: 5px 18px;
             border-radius: 20px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 700;
             transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
+        /* Badges de estado */
         .badge-conforme {
             background: #27ae60;
             color: white;
@@ -112,17 +182,31 @@
             color: white;
         }
 
+        .badge-subsanado {
+            background: #8e44ad;
+            color: white;
+        }
+
+        /* Estados del toggle */
         .conforme-toggle.conforme-activo {
             border-color: #27ae60;
             background: #eafaf1;
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
         }
 
         .conforme-toggle.no-conforme-activo {
             border-color: #e74c3c;
             background: #fdedec;
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.2);
         }
 
-        /* ===== BOTONES DE ESTADO ===== */
+        .conforme-toggle.subsanado-activo {
+            border-color: #8e44ad;
+            background: #f4ecf7;
+            box-shadow: 0 0 0 3px rgba(142, 68, 173, 0.2);
+        }
+
+        /* ===== BOTONES DE ESTADO RÁPIDO ===== */
         .acciones {
             display: flex;
             gap: 10px;
@@ -131,19 +215,24 @@
         }
 
         .btn-estado {
-            padding: 8px 16px;
+            padding: 8px 18px;
             border: 2px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
             background: white;
             cursor: pointer;
             font-weight: 600;
             transition: all 0.3s ease;
             font-size: 14px;
+            font-family: inherit;
         }
 
         .btn-estado:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-estado:active {
+            transform: translateY(0px);
         }
 
         .btn-estado.activo {
@@ -164,15 +253,15 @@
         }
 
         .btn-subsanado.activo {
+            border-color: #8e44ad;
+            background: #f4ecf7;
+            color: #8e44ad;
+        }
+
+        .btn-pendiente.activo {
             border-color: #f39c12;
             background: #fef9e7;
             color: #f39c12;
-        }
-
-        .fecha {
-            color: #7f8c8d;
-            font-size: 13px;
-            margin-top: 10px;
         }
 
         /* ===== TOAST NOTIFICACIÓN ===== */
@@ -182,14 +271,16 @@
             right: 30px;
             background: #2c3e50;
             color: white;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            padding: 16px 28px;
+            border-radius: 10px;
+            box-shadow: 0 6px 25px rgba(0,0,0,0.3);
             opacity: 0;
             transform: translateY(100px);
             transition: all 0.4s ease;
-            z-index: 1000;
+            z-index: 9999;
             font-weight: 500;
+            max-width: 400px;
+            font-size: 15px;
         }
 
         .toast.mostrar {
@@ -200,85 +291,331 @@
         .toast.exito {
             background: #27ae60;
         }
+
+        .toast.error {
+            background: #e74c3c;
+        }
+
+        .toast.info {
+            background: #3498db;
+        }
+
+        /* ===== CONTADOR ===== */
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .stat-item .numero {
+            font-weight: 700;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .stat-item .color-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-conforme { background: #27ae60; }
+        .dot-no-conforme { background: #e74c3c; }
+        .dot-pendiente { background: #f39c12; }
+        .dot-subsanado { background: #8e44ad; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            .header { padding: 18px; }
+            .header h1 { font-size: 20px; flex-wrap: wrap; }
+            .obs-header { flex-direction: column; align-items: flex-start; }
+            .conforme-toggle { flex-wrap: wrap; }
+            .conforme-toggle label { font-size: 14px; }
+            .acciones { gap: 6px; }
+            .btn-estado { font-size: 12px; padding: 6px 12px; }
+            .stats { padding: 12px 16px; gap: 12px; }
+            .toast { bottom: 15px; right: 15px; left: 15px; max-width: none; font-size: 14px; padding: 14px 20px; }
+        }
+
+        /* ===== BOTÓN LIMPIAR ===== */
+        .btn-limpiar {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-limpiar:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .btn-reset {
+            background: #95a5a6;
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset:hover {
+            background: #7f8c8d;
+            transform: scale(1.05);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
-    <h1>📋 Gestión de Observaciones - CORREGIDO</h1>
+
+    <!-- ===== HEADER ===== -->
+    <div class="header">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div>
+                <h1>
+                    📋 Gestión de Observaciones
+                    <span class="badge-version">v2.0 CORREGIDO</span>
+                </h1>
+                <div class="subtitle">✅ El checkbox CONFORME ahora funciona sin modales absurdos</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-reset" onclick="resetearTodo()">🔄 Resetear</button>
+                <button class="btn-limpiar" onclick="limpiarDatos()">🗑️ Limpiar datos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ESTADÍSTICAS ===== -->
+    <div class="stats" id="stats">
+        <div class="stat-item">
+            <span class="color-dot dot-conforme"></span>
+            CONFORME: <span class="numero" id="count-conforme">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="color-dot dot-no-conforme"></span>
+            NO CONFORME: <span class="numero" id="count-no-conforme">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="color-dot dot-pendiente"></span>
+            PENDIENTE: <span class="numero" id="count-pendiente">0</span>
+        </div>
+        <div class="stat-item">
+            <span class="color-dot dot-subsanado"></span>
+            SUBSANADO: <span class="numero" id="count-subsanado">0</span>
+        </div>
+        <div class="stat-item" style="margin-left: auto; font-weight: 600;">
+            Total: <span class="numero" id="count-total">0</span>
+        </div>
+    </div>
+
+    <!-- ===== OBSERVACIONES ===== -->
 
     <!-- OBSERVACIÓN 1 -->
     <div class="observacion" id="obs-1">
         <div class="obs-header">
-            <span class="obs-titulo">🔍 Observación #1</span>
-            <span class="fecha">2/7/2023</span>
+            <div class="obs-titulo">
+                🔍 Observación
+                <span class="obs-id">#1</span>
+            </div>
+            <span class="obs-fecha">📅 2/7/2023</span>
         </div>
         <div class="obs-descripcion">
             <strong>Descripción:</strong> Las tuberías irán enterradas o dentro del falso piso
         </div>
 
-        <!-- CHECKBOX CONFORME (Principal) -->
-        <div class="conforme-toggle" id="toggle-1" onclick="toggleConforme(1)">
-            <input type="checkbox" id="check-1" onchange="event.stopPropagation(); toggleConforme(1)">
+        <!-- CHECKBOX CONFORME (Principal - SIN MODALES) -->
+        <div class="conforme-toggle" id="toggle-1">
+            <input type="checkbox" id="check-1">
             <label for="check-1">✅ Marcar como CONFORME</label>
-            <span class="estado-badge" id="badge-1">PENDIENTE</span>
+            <span class="estado-badge badge-pendiente" id="badge-1">PENDIENTE</span>
         </div>
 
         <!-- BOTONES DE ESTADO RÁPIDO -->
         <div class="acciones">
-            <button class="btn-estado btn-conforme" onclick="cambiarEstado(1, 'CONFORME')">✔ CONFORME</button>
-            <button class="btn-estado btn-no-conforme" onclick="cambiarEstado(1, 'NO CONFORME')">✘ NO CONFORME</button>
-            <button class="btn-estado btn-subsanado" onclick="cambiarEstado(1, 'SUBSANADO')">🔄 SUBSANADO</button>
+            <button class="btn-estado btn-conforme" data-id="1" data-estado="CONFORME">✔ CONFORME</button>
+            <button class="btn-estado btn-no-conforme" data-id="1" data-estado="NO CONFORME">✘ NO CONFORME</button>
+            <button class="btn-estado btn-subsanado" data-id="1" data-estado="SUBSANADO">🔄 SUBSANADO</button>
+            <button class="btn-estado btn-pendiente" data-id="1" data-estado="PENDIENTE">⏳ PENDIENTE</button>
         </div>
     </div>
 
-    <!-- TOAST NOTIFICACIÓN -->
+    <!-- OBSERVACIÓN 2 -->
+    <div class="observacion" id="obs-2">
+        <div class="obs-header">
+            <div class="obs-titulo">
+                🔍 Observación
+                <span class="obs-id">#2</span>
+            </div>
+            <span class="obs-fecha">📅 3/7/2023</span>
+        </div>
+        <div class="obs-descripcion">
+            <strong>Descripción:</strong> Revisar instalación eléctrica en el panel principal
+        </div>
+
+        <!-- CHECKBOX CONFORME (Principal - SIN MODALES) -->
+        <div class="conforme-toggle" id="toggle-2">
+            <input type="checkbox" id="check-2">
+            <label for="check-2">✅ Marcar como CONFORME</label>
+            <span class="estado-badge badge-pendiente" id="badge-2">PENDIENTE</span>
+        </div>
+
+        <!-- BOTONES DE ESTADO RÁPIDO -->
+        <div class="acciones">
+            <button class="btn-estado btn-conforme" data-id="2" data-estado="CONFORME">✔ CONFORME</button>
+            <button class="btn-estado btn-no-conforme" data-id="2" data-estado="NO CONFORME">✘ NO CONFORME</button>
+            <button class="btn-estado btn-subsanado" data-id="2" data-estado="SUBSANADO">🔄 SUBSANADO</button>
+            <button class="btn-estado btn-pendiente" data-id="2" data-estado="PENDIENTE">⏳ PENDIENTE</button>
+        </div>
+    </div>
+
+    <!-- OBSERVACIÓN 3 -->
+    <div class="observacion" id="obs-3">
+        <div class="obs-header">
+            <div class="obs-titulo">
+                🔍 Observación
+                <span class="obs-id">#3</span>
+            </div>
+            <span class="obs-fecha">📅 4/7/2023</span>
+        </div>
+        <div class="obs-descripcion">
+            <strong>Descripción:</strong> Verificar presión de agua en el sistema de bombeo
+        </div>
+
+        <!-- CHECKBOX CONFORME (Principal - SIN MODALES) -->
+        <div class="conforme-toggle" id="toggle-3">
+            <input type="checkbox" id="check-3">
+            <label for="check-3">✅ Marcar como CONFORME</label>
+            <span class="estado-badge badge-pendiente" id="badge-3">PENDIENTE</span>
+        </div>
+
+        <!-- BOTONES DE ESTADO RÁPIDO -->
+        <div class="acciones">
+            <button class="btn-estado btn-conforme" data-id="3" data-estado="CONFORME">✔ CONFORME</button>
+            <button class="btn-estado btn-no-conforme" data-id="3" data-estado="NO CONFORME">✘ NO CONFORME</button>
+            <button class="btn-estado btn-subsanado" data-id="3" data-estado="SUBSANADO">🔄 SUBSANADO</button>
+            <button class="btn-estado btn-pendiente" data-id="3" data-estado="PENDIENTE">⏳ PENDIENTE</button>
+        </div>
+    </div>
+
+    <!-- ===== TOAST NOTIFICACIÓN ===== -->
     <div class="toast" id="toast"></div>
 
+    <!-- ========================================== -->
+    <!-- ===== JAVASCRIPT - COMPLETO Y CORREGIDO ===== -->
+    <!-- ========================================== -->
     <script>
         // ============================================
         // DATOS DE LAS OBSERVACIONES
         // ============================================
-        const observaciones = {
+        const datosIniciales = {
             1: {
                 id: 1,
                 descripcion: 'Las tuberías irán enterradas o dentro del falso piso',
-                estado: 'PENDIENTE' // PENDIENTE, CONFORME, NO CONFORME, SUBSANADO
+                estado: 'PENDIENTE'
+            },
+            2: {
+                id: 2,
+                descripcion: 'Revisar instalación eléctrica en el panel principal',
+                estado: 'PENDIENTE'
+            },
+            3: {
+                id: 3,
+                descripcion: 'Verificar presión de agua en el sistema de bombeo',
+                estado: 'PENDIENTE'
             }
         };
 
+        let observaciones = {};
+
         // ============================================
-        // FUNCIONES PRINCIPALES - CORREGIDAS
+        // FUNCIONES PRINCIPALES
         // ============================================
 
-        // 🔹 Función que se ejecuta al hacer clic en el checkbox CONFORME
-        function toggleConforme(id) {
-            const obs = observaciones[id];
-            const checkbox = document.getElementById(`check-${id}`);
-            
-            // Si el checkbox está marcado → poner CONFORME
-            if (checkbox.checked) {
-                cambiarEstado(id, 'CONFORME');
+        // 🔹 Inicializar o cargar datos guardados
+        function cargarDatos() {
+            const guardado = localStorage.getItem('observaciones_v2');
+            if (guardado) {
+                try {
+                    const datos = JSON.parse(guardado);
+                    // Asegurar que todos los IDs existen
+                    Object.keys(datosIniciales).forEach(id => {
+                        if (!datos[id]) {
+                            datos[id] = { ...datosIniciales[id] };
+                        }
+                    });
+                    observaciones = datos;
+                } catch (e) {
+                    console.log('Error al cargar datos, usando iniciales:', e);
+                    observaciones = JSON.parse(JSON.stringify(datosIniciales));
+                }
             } else {
-                // Si se desmarca → volver a PENDIENTE
-                cambiarEstado(id, 'PENDIENTE');
+                observaciones = JSON.parse(JSON.stringify(datosIniciales));
             }
+            // Guardar para asegurar consistencia
+            guardarDatos();
+        }
+
+        // 🔹 Guardar en localStorage
+        function guardarDatos() {
+            localStorage.setItem('observaciones_v2', JSON.stringify(observaciones));
         }
 
         // 🔹 Función principal para cambiar el estado - ¡CORREGIDA!
         function cambiarEstado(id, nuevoEstado) {
+            if (!observaciones[id]) return;
+
             const obs = observaciones[id];
             const estadoAnterior = obs.estado;
-            
+
+            // Si el estado es el mismo, no hacer nada
+            if (estadoAnterior === nuevoEstado) {
+                mostrarToast(`ℹ️ Ya está en "${nuevoEstado}"`, 'info');
+                return;
+            }
+
             // Actualizar el objeto
             obs.estado = nuevoEstado;
-            
+
+            // Guardar en localStorage
+            guardarDatos();
+
             // Actualizar la interfaz
             actualizarUI(id, nuevoEstado);
-            
+
+            // Actualizar estadísticas
+            actualizarStats();
+
             // Mostrar notificación
-            mostrarToast(`✅ Estado cambiado: ${estadoAnterior} → ${nuevoEstado}`);
-            
-            // ⭐ IMPORTANTE: Guardar en localStorage para que persista
-            localStorage.setItem('observaciones', JSON.stringify(observaciones));
+            mostrarToast(`✅ Cambiado: ${estadoAnterior} → ${nuevoEstado}`, 'exito');
         }
 
         // 🔹 Actualizar toda la UI de una observación
@@ -286,29 +623,38 @@
             const checkbox = document.getElementById(`check-${id}`);
             const badge = document.getElementById(`badge-${id}`);
             const toggle = document.getElementById(`toggle-${id}`);
-            
+
+            if (!checkbox || !badge || !toggle) return;
+
             // Actualizar badge
             badge.textContent = estado;
             badge.className = 'estado-badge';
-            
+
+            // Mapeo de clases
+            const claseMap = {
+                'CONFORME': 'badge-conforme',
+                'NO CONFORME': 'badge-no-conforme',
+                'SUBSANADO': 'badge-subsanado',
+                'PENDIENTE': 'badge-pendiente'
+            };
+            badge.classList.add(claseMap[estado] || 'badge-pendiente');
+
+            // Actualizar toggle
+            toggle.className = 'conforme-toggle';
             if (estado === 'CONFORME') {
-                badge.classList.add('badge-conforme');
-                toggle.className = 'conforme-toggle conforme-activo';
+                toggle.classList.add('conforme-activo');
                 checkbox.checked = true;
             } else if (estado === 'NO CONFORME') {
-                badge.classList.add('badge-no-conforme');
-                toggle.className = 'conforme-toggle no-conforme-activo';
+                toggle.classList.add('no-conforme-activo');
                 checkbox.checked = false;
             } else if (estado === 'SUBSANADO') {
-                badge.classList.add('badge-pendiente');
-                toggle.className = 'conforme-toggle';
+                toggle.classList.add('subsanado-activo');
                 checkbox.checked = false;
-            } else { // PENDIENTE o cualquier otro
-                badge.classList.add('badge-pendiente');
-                toggle.className = 'conforme-toggle';
+            } else {
+                // PENDIENTE
                 checkbox.checked = false;
             }
-            
+
             // Actualizar botones de estado
             actualizarBotones(id, estado);
         }
@@ -316,57 +662,146 @@
         // 🔹 Actualizar botones de estado (visual)
         function actualizarBotones(id, estadoActual) {
             const observacion = document.getElementById(`obs-${id}`);
+            if (!observacion) return;
+
             const botones = observacion.querySelectorAll('.btn-estado');
-            
             botones.forEach(btn => {
                 btn.classList.remove('activo');
-                const texto = btn.textContent.trim();
-                
-                if (texto.includes('CONFORME') && estadoActual === 'CONFORME') {
-                    btn.classList.add('activo');
-                } else if (texto.includes('NO CONFORME') && estadoActual === 'NO CONFORME') {
-                    btn.classList.add('activo');
-                } else if (texto.includes('SUBSANADO') && estadoActual === 'SUBSANADO') {
+                const estadoBtn = btn.getAttribute('data-estado');
+                if (estadoBtn === estadoActual) {
                     btn.classList.add('activo');
                 }
             });
         }
 
+        // 🔹 Actualizar estadísticas
+        function actualizarStats() {
+            const counts = {
+                'CONFORME': 0,
+                'NO CONFORME': 0,
+                'PENDIENTE': 0,
+                'SUBSANADO': 0
+            };
+
+            Object.values(observaciones).forEach(obs => {
+                if (counts[obs.estado] !== undefined) {
+                    counts[obs.estado]++;
+                }
+            });
+
+            document.getElementById('count-conforme').textContent = counts['CONFORME'];
+            document.getElementById('count-no-conforme').textContent = counts['NO CONFORME'];
+            document.getElementById('count-pendiente').textContent = counts['PENDIENTE'];
+            document.getElementById('count-subsanado').textContent = counts['SUBSANADO'];
+            document.getElementById('count-total').textContent = Object.keys(observaciones).length;
+        }
+
         // 🔹 Mostrar toast de notificación
-        function mostrarToast(mensaje) {
+        function mostrarToast(mensaje, tipo = 'exito') {
             const toast = document.getElementById('toast');
             toast.textContent = mensaje;
-            toast.className = 'toast exito mostrar';
-            
+            toast.className = `toast ${tipo} mostrar`;
+
             clearTimeout(toast._timeout);
             toast._timeout = setTimeout(() => {
                 toast.className = 'toast';
-            }, 3000);
+            }, 3500);
         }
 
         // ============================================
-        // CARGAR DATOS GUARDADOS
+        // MANEJADORES DE EVENTOS
         // ============================================
-        function cargarDatos() {
-            const guardado = localStorage.getItem('observaciones');
-            if (guardado) {
-                try {
-                    const datos = JSON.parse(guardado);
-                    Object.assign(observaciones, datos);
-                } catch (e) {
-                    console.log('Error al cargar datos:', e);
+
+        // 🔹 Toggle del checkbox CONFORME
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id && e.target.id.startsWith('check-')) {
+                const id = parseInt(e.target.id.split('-')[1]);
+                if (e.target.checked) {
+                    cambiarEstado(id, 'CONFORME');
+                } else {
+                    cambiarEstado(id, 'PENDIENTE');
                 }
+            }
+        });
+
+        // 🔹 Clics en los botones de estado
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('.btn-estado');
+            if (btn) {
+                const id = parseInt(btn.getAttribute('data-id'));
+                const estado = btn.getAttribute('data-estado');
+                if (id && estado) {
+                    cambiarEstado(id, estado);
+                }
+            }
+        });
+
+        // 🔹 Clics en el toggle (para abrir/cerrar checkbox)
+        document.addEventListener('click', function(e) {
+            const toggle = e.target.closest('.conforme-toggle');
+            if (toggle) {
+                const checkbox = toggle.querySelector('input[type="checkbox"]');
+                if (checkbox && e.target !== checkbox) {
+                    checkbox.checked = !checkbox.checked;
+                    // Disparar evento change
+                    const event = new Event('change', { bubbles: true });
+                    checkbox.dispatchEvent(event);
+                }
+            }
+        });
+
+        // ============================================
+        // FUNCIONES DE UTILIDAD
+        // ============================================
+
+        // 🔹 Resetear todo (volver a estado inicial)
+        function resetearTodo() {
+            if (confirm('¿Resetear todas las observaciones a PENDIENTE?')) {
+                Object.keys(observaciones).forEach(id => {
+                    observaciones[id].estado = 'PENDIENTE';
+                });
+                guardarDatos();
+                // Actualizar UI
+                Object.keys(observaciones).forEach(id => {
+                    actualizarUI(parseInt(id), 'PENDIENTE');
+                });
+                actualizarStats();
+                mostrarToast('🔄 Todas las observaciones reseteadas a PENDIENTE', 'info');
+            }
+        }
+
+        // 🔹 Limpiar datos guardados
+        function limpiarDatos() {
+            if (confirm('¿Eliminar todos los datos guardados? Se perderán los cambios.')) {
+                localStorage.removeItem('observaciones_v2');
+                observaciones = JSON.parse(JSON.stringify(datosIniciales));
+                Object.keys(observaciones).forEach(id => {
+                    actualizarUI(parseInt(id), 'PENDIENTE');
+                });
+                actualizarStats();
+                mostrarToast('🗑️ Datos limpiados correctamente', 'info');
+                // Recargar la página para asegurar consistencia
+                setTimeout(() => location.reload(), 500);
             }
         }
 
         // ============================================
         // INICIALIZAR
         // ============================================
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function() {
             cargarDatos();
-            actualizarUI(1, observaciones[1].estado);
-            console.log('✅ Sistema CORREGIDO cargado correctamente');
-            console.log('📌 Estado actual:', observaciones[1].estado);
+
+            // Actualizar UI para todas las observaciones
+            Object.keys(observaciones).forEach(id => {
+                const idNum = parseInt(id);
+                actualizarUI(idNum, observaciones[idNum].estado);
+            });
+
+            actualizarStats();
+
+            console.log('✅ Sistema CORREGIDO v2.0 cargado correctamente');
+            console.log('📌 Observaciones:', observaciones);
+            console.log('🎯 El checkbox CONFORME ahora funciona SIN MODALES');
         });
     </script>
 </body>
