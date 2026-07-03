@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Observaciones</title>
+    
+    <!-- ======================================== -->
+    <!-- FIREBASE SDK (necesario) -->
+    <!-- ======================================== -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    
+    <style>
+        /* ======================================== */
+        /* ESTILOS */
+        /* ======================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* CONTADORES */
+        .contadores {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .contador-card {
+            flex: 1;
+            min-width: 120px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .contador-card .numero {
+            font-size: 28px;
+            display: block;
+        }
+        
+        .contador-card .label {
+            font-size: 12px;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+        
+        .contador-total { background: #6c757d; }
+        .contador-conformes { background: #28a745; }
+        .contador-evaluados { background: #17a2b8; }
+        .contador-subsanados { background: #ffc107; color: #333; }
+        .contador-pendientes { background: #dc3545; }
+        
+        /* BOTONES */
+        .acciones {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary { background: #007bff; color: white; }
+        .btn-primary:hover { background: #0056b3; }
+        
+        .btn-success { background: #28a745; color: white; }
+        .btn-success:hover { background: #1e7e34; }
+        
+        .btn-warning { background: #ffc107; color: #333; }
+        .btn-warning:hover { background: #e0a800; }
+        
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-danger:hover { background: #bd2130; }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* TABLA */
+        .tabla-container {
+            overflow-x: auto;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        th {
+            background: #343a40;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            white-space: nowrap;
+        }
+        
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+            vertical-align: middle;
+        }
+        
+        tr:hover {
+            background: #f8f9fa;
+        }
+        
+        /* SELECTS Y INPUTS */
+        .estado-select {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .estado-select:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+        
+        .comentario-revision {
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            width: 100%;
+            min-width: 150px;
+            font-size: 13px;
+        }
+        
+        .comentario-revision:focus {
+            outline: none;
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
+        
+        .fecha-revision {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+        }
+        
+        .btn-enviar-fila {
+            padding: 4px 12px;
+            border: none;
+            border-radius: 4px;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        
+        .btn-enviar-fila:hover:not(:disabled) {
+            background: #1e7e34;
+        }
+        
+        .btn-enviar-fila:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        .btn-enviar-fila.enviado {
+            background: #6c757d;
+        }
+        
+        /* CHECKBOX */
+        .revisado-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        /* MENSAJES */
+        .mensajes-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+        
+        .mensaje {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .mensaje-success { background: #28a745; }
+        .mensaje-error { background: #dc3545; }
+        .mensaje-info { background: #17a2b8; }
+        .mensaje-warning { background: #ffc107; color: #333; }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* LOADING */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-overlay.active {
+            display: flex;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            background: white;
+            padding: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* FILA SUBSANADA */
+        .fila-subsanada {
+            background-color: #f0f8ff !important;
+        }
+        
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .contadores {
+                flex-direction: column;
+            }
+            
+            .contador-card {
+                min-width: 100%;
+            }
+            
+            table {
+                font-size: 12px;
+            }
+            
+            td, th {
+                padding: 6px;
+            }
+            
+            .comentario-revision {
+                min-width: 80px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        
+        <!-- ======================================== -->
+        <!-- CONTADORES -->
+        <!-- ======================================== -->
+        <div class="contadores">
+            <div class="contador-card contador-total">
+                <span class="numero" id="contador-total">0</span>
+                <span class="label">TOTAL</span>
+            </div>
+            <div class="contador-card contador-conformes">
+                <span class="numero" id="contador-conformes">0</span>
+                <span class="label">CONFORMES</span>
+            </div>
+            <div class="contador-card contador-evaluados">
+                <span class="numero" id="contador-evaluados">0</span>
+                <span class="label">EVALUADOS</span>
+            </div>
+            <div class="contador-card contador-subsanados">
+                <span class="numero" id="contador-subsanados">0</span>
+                <span class="label">SUBSANADOS</span>
+            </div>
+            <div class="contador-card contador-pendientes">
+                <span class="numero" id="contador-pendientes">0</span>
+                <span class="label">PENDIENTES</span>
+            </div>
+        </div>
+        
+        <!-- ======================================== -->
+        <!-- ACCIONES -->
+        <!-- ======================================== -->
+        <div class="acciones">
+            <button class="btn btn-success" onclick="enviarTodasParaRevision()">
+                📤 Enviar todas para revisión
+            </button>
+            <button class="btn btn-primary" onclick="exportarPDF()">
+                📄 Exportar PDF
+            </button>
+            <button class="btn btn-warning" onclick="recargarDesdeFirebase()">
+                🔄 Recargar desde Firebase
+            </button>
+            <span style="margin-left: auto; font-size: 14px; color: #6c757d;" id="info-carga">
+                Cargando...
+            </span>
+        </div>
+        
+        <!-- ======================================== -->
+        <!-- TABLA DE OBSERVACIONES -->
+        <!-- ======================================== -->
+        <div class="tabla-container">
+            <table id="tabla-observaciones">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Observación</th>
+                        <th>Estado</th>
+                        <th>Fecha Revisión</th>
+                        <th>Comentario</th>
+                        <th>Enviar</th>
+                        <th>Revisado</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-observaciones">
+                    <!-- Las observaciones se cargan aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- ======================================== -->
+        <!-- MENSAJES -->
+        <!-- ======================================== -->
+        <div class="mensajes-container" id="mensajes-container"></div>
+        
+        <!-- ======================================== -->
+        <!-- LOADING -->
+        <!-- ======================================== -->
+        <div class="loading-overlay" id="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+        
+    </div>
+    
+    <!-- ======================================== -->
+    <!-- SCRIPT PRINCIPAL -->
+    <!-- ======================================== -->
+    <script>
+        // ============================================
+        // 1. CONFIGURACIÓN DE FIREBASE
+        // ============================================
+        
+        // 🔥 CAMBIA ESTOS DATOS CON LOS TUYOS 🔥
+        const firebaseConfig = {
+            apiKey: "TU_API_KEY",
+            authDomain: "TU_AUTH_DOMAIN",
+            projectId: "TU_PROJECT_ID",
+            storageBucket: "TU_STORAGE_BUCKET",
+            messagingSenderId: "TU_MESSAGING_SENDER_ID",
+            appId: "TU_APP_ID"
+        };
+        
+        // Inicializar Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        
+        // ============================================
+        // 2. VARIABLES GLOBALES
+        // ============================================
+        
+        let todasLasObservaciones = [];
+        
+        // ============================================
+        // 3. CARGAR TODAS LAS OBSERVACIONES DE FIREBASE
+        // ============================================
+        
+        async function cargarTodasObservacionesFirebase() {
+            mostrarLoading(true);
+            document.getElementById('info-carga').textContent = 'Cargando observaciones...';
+            
+            try {
+                // Obtener TODAS las observaciones de Firebase
+                const snapshot = await db.collection('observaciones')
+                    .orderBy('fechaCreacion', 'desc')
+                    .get();
+                
+                if (snapshot.empty) {
+                    mostrarMensaje('No hay observaciones registradas en Firebase', 'warning');
+                    document.getElementById('info-carga').textContent = 'Sin observaciones';
+                    mostrarLoading(false);
+                    return;
+                }
+                
+                todasLasObservaciones = [];
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    todasLasObservaciones.push({
+                        id: doc.id,
+                        descripcion: data.descripcion || data.texto || 'Sin descripción',
+                        estado: data.estado || 'PENDIENTE',
+                        evaluado: data.evaluado || false,
+                        subsanado: data.subsanado || false,
+                        fechaRevision: data.fechaRevision || '',
+                        comentario: data.comentario || '',
+                        revisado: data.revisado || false,
+                        fechaCreacion: data.fechaCreacion || new Date()
+                    });
+                });
+                
+                console.log(`📊 Total de observaciones cargadas: ${todasLasObservaciones.length}`);
+                document.getElementById('info-carga').textContent = `✅ ${todasLasObservaciones.length} observaciones`;
+                
+                // Renderizar en la tabla
+                renderizarObservaciones(todasLasObservaciones);
+                
+                // Guardar en localStorage como respaldo
+                localStorage.setItem('observaciones_firebase', JSON.stringify(todasLasObservaciones));
+                
+                mostrarMensaje(`✅ ${todasLasObservaciones.length} observaciones cargadas correctamente`, 'success');
+                mostrarLoading(false);
+                
+            } catch (error) {
+                console.error('❌ Error al cargar de Firebase:', error);
+                document.getElementById('info-carga').textContent = '❌ Error de carga';
+                mostrarMensaje('Error al cargar: ' + error.message, 'error');
+                mostrarLoading(false);
+                
+                // Intentar cargar desde localStorage
+                cargarDesdeLocalStorage();
+            }
+        }
+        
+        // ============================================
+        // 4. RENDERIZAR OBSERVACIONES EN LA TABLA
+        // ============================================
+        
+        function renderizarObservaciones(observaciones) {
+            const tbody = document.getElementById('tbody-observaciones');
+            if (!tbody) {
+                console.error('❌ No se encontró el tbody');
+                return;
+            }
+            
+            // Limpiar tabla
+            tbody.innerHTML = '';
+            
+            // Crear filas
+            observaciones.forEach((obs) => {
+                const tr = document.createElement('tr');
+                tr.dataset.id = obs.id;
+                tr.dataset.evaluado = obs.evaluado ? 'true' : 'false';
+                tr.dataset.subsanado = obs.subsanado ? 'true' : 'false';
+                
+                if (obs.subsanado) {
+                    tr.classList.add('fila-subsanada');
+                }
+                
+                tr.innerHTML = `
+                    <td class="id-observacion">${obs.id.substring(0, 8)}...</td>
+                    <td>${obs.descripcion}</td>
+                    <td>
+                        <select class="estado-select" data-id="${obs.id}">
+                            <option value="PENDIENTE" ${obs.estado === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+                            <option value="CONFORME" ${obs.estado === 'CONFORME' ? 'selected' : ''}>CONFORME</option>
+                            <option value="SE REITERA OBSERVACIÓN" ${obs.estado === 'SE REITERA OBSERVACIÓN' ? 'selected' : ''}>SE REITERA OBSERVACIÓN</option>
+                            <option value="OBSERVADO" ${obs.estado === 'OBSERVADO' ? 'selected' : ''}>OBSERVADO</option>
+                        </select>
+                    </td>
+                    <td class="fecha-revision">${obs.fechaRevision || ''}</td>
+                    <td>
+                        <input type="text" class="comentario-revision" 
+                               placeholder="Comentario" 
+                               value="${obs.comentario || ''}"
+                               data-id="${obs.id}">
+                    </td>
+                    <td>
+                        <button class="btn-enviar-fila" 
+                                data-id="${obs.id}"
+                                ${obs.subsanado ? 'disabled' : ''}>
+                            ${obs.subsanado ? '✓ Enviado' : 'Enviar'}
+                        </button>
+                    </td>
+                    <td>
+                        <input type="checkbox" class="revisado-checkbox" 
+                               data-id="${obs.id}"
+                               ${obs.revisado ? 'checked' : ''}>
+                    </td>
+                `;
+                
+                tbody.appendChild(tr);
+            });
+            
+            // Asignar eventos
+            asignarEventos();
+            
+            // Actualizar contadores
+            actualizarContadores();
+        }
+        
+        // ============================================
+        // 5. ASIGNAR EVENTOS
+        // ============================================
+        
+        function asignarEventos() {
+            // Evento: Cambio de estado
+            document.querySelectorAll('.estado-select').forEach(select => {
+                select.removeEventListener('change', handleEstadoChange);
+                select.addEventListener('change', handleEstadoChange);
+            });
+            
+            // Evento: Botón enviar
+            document.querySelectorAll('.btn-enviar-fila').forEach(btn => {
+                btn.removeEventListener('click', handleEnviarRevision);
+                btn.addEventListener('click', handleEnviarRevision);
+            });
+            
+            // Evento: Checkbox revisado
+            document.querySelectorAll('.revisado-checkbox').forEach(checkbox => {
+                checkbox.removeEventListener('change', handleRevisadoChange);
+                checkbox.addEventListener('change', handleRevisadoChange);
+            });
+            
+            // Evento: Comentario (guardar al perder foco)
+            document.querySelectorAll('.comentario-revision').forEach(input => {
+                input.removeEventListener('blur', handleComentarioChange);
+                input.addEventListener('blur', handleComentarioChange);
+            });
+        }
+        
+        // ============================================
+        // 6. MANEJADORES DE EVENTOS
+        // ============================================
+        
+        async function handleEstadoChange(event) {
+            const select = event.target;
+            const fila = select.closest('tr');
+            const id = select.dataset.id;
+            const estado = select.value;
+            
+            // Actualizar fecha
+            const fechaCell = fila.querySelector('.fecha-revision');
+            let fechaFormateada = '';
+            
+            if (estado === 'CONFORME' || estado === 'SE REITERA OBSERVACIÓN') {
+                const ahora = new Date();
+                fechaFormateada = ahora.getFullYear() + '-' + 
+                                 String(ahora.getMonth() + 1).padStart(2, '0') + '-' + 
+                                 String(ahora.getDate()).padStart(2, '0') + ' ' + 
+                                 String(ahora.getHours()).padStart(2, '0') + ':' + 
+                                 String(ahora.getMinutes()).padStart(2, '0');
+                fechaCell.textContent = fechaFormateada;
+                fila.dataset.evaluado = 'true';
+            } else {
+                fechaCell.textContent = '';
+                fila.dataset.evaluado = 'false';
+            }
+            
+            // Guardar en Firebase
+            await guardarEnFirebase(id, {
+                estado: estado,
+                fechaRevision: fechaFormateada,
+                evaluado: fila.dataset.evaluado === 'true'
+            });
+            
+            actualizarContadores();
+            mostrarMensaje(`✅ Estado actualizado a: ${estado}`, 'success');
+        }
+        
+        async function handleEnviarRevision(event) {
+            const btn = event.target;
+            const fila = btn.closest('tr');
+            const id = btn.dataset.id;
+            
+            if (fila.dataset.subsanado === 'true') {
+                mostrarMensaje('Esta observación ya fue enviada', 'warning');
+                return;
+            }
+            
+            // Marcar como subsanado
+            fila.dataset.subsanado = 'true';
+            fila.classList.add('fila-subsanada');
+            btn.disabled = true;
+            btn.textContent = '✓ Enviado';
+            
+            // Guardar en Firebase
+            await guardarEnFirebase(id, {
+                subsanado: true,
+                fechaEnvio: new Date().toISOString()
+            });
+            
+            actualizarContadores();
+            mostrarMensaje('✅ Enviado para revisión', 'success');
+        }
+        
+        async function handleRevisadoChange(event) {
+            const checkbox = event.target;
+            const id = checkbox.dataset.id;
+            const revisado = checkbox.checked;
+            
+            await guardarEnFirebase(id, { revisado: revisado });
+            actualizarContadores();
+        }
+        
+        async function handleComentarioChange(event) {
+            const input = event.target;
+            const id = input.dataset.id;
+            const comentario = input.value;
+            
+            await guardarEnFirebase(id, { comentario: comentario });
+        }
+        
+        // ============================================
+        // 7. GUARDAR EN FIREBASE
+        // ============================================
+        
+        async function guardarEnFirebase(id, datos) {
+            try {
+                await db.collection('observaciones').doc(id).update(datos);
+                console.log(`✅ Actualizado ${id}:`, datos);
+            } catch (error) {
+                console.error('❌ Error al guardar:', error);
+                mostrarMensaje('Error al guardar cambios', 'error');
+            }
+        }
+        
+        // ============================================
+        // 8. ENVIAR TODAS PARA REVISIÓN
+        // ============================================
+        
+        async function enviarTodasParaRevision() {
+            const filas = document.querySelectorAll('#tbody-observaciones tr:not([data-subsanado="true"])');
+            
+            if (filas.length === 0) {
+                mostrarMensaje('Todas las observaciones ya han sido enviadas', 'info');
+                return;
+            }
+            
+            if (!confirm(`¿Enviar ${filas.length} observaciones para revisión?`)) {
+                return;
+            }
+            
+            mostrarLoading(true);
+            
+            try {
+                const promesas = [];
+                
+                filas.forEach(fila => {
+                    const id = fila.dataset.id;
+                    fila.dataset.subsanado = 'true';
+                    fila.classList.add('fila-subsanada');
+                    const btn = fila.querySelector('.btn-enviar-fila');
+                    if (btn) {
+                        btn.disabled = true;
+                        btn.textContent = '✓ Enviado';
+                    }
+                    
+                    promesas.push(
+                        db.collection('observaciones').doc(id).update({
+                            subsanado: true,
+                            fechaEnvio: new Date().toISOString()
+                        })
+                    );
+                });
+                
+                await Promise.all(promesas);
+                
+                actualizarContadores();
+                mostrarMensaje(`✅ ${filas.length} observaciones enviadas para revisión`, 'success');
+                mostrarLoading(false);
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                mostrarMensaje('Error al enviar: ' + error.message, 'error');
+                mostrarLoading(false);
+            }
+        }
+        
+        // ============================================
+        // 9. ACTUALIZAR CONTADORES
+        // ============================================
+        
+        function actualizarContadores() {
+            const filas = document.querySelectorAll('#tbody-observaciones tr');
+            
+            let total = filas.length;
+            let conformes = 0;
+            let evaluados = 0;
+            let subsanados = 0;
+            let pendientes = 0;
+            
+            filas.forEach(fila => {
+                const select = fila.querySelector('.estado-select');
+                const estado = select ? select.value : '';
+                const evaluado = fila.dataset.evaluado === 'true';
+                const subsanado = fila.dataset.subsanado === 'true';
+                
+                if (estado === 'CONFORME') {
+                    conformes++;
+                }
+                
+                if (estado === 'CONFORME' || estado === 'SE REITERA OBSERVACIÓN') {
+                    evaluados++;
+                }
+                
+                if (subsanado) {
+                    subsanados++;
+                }
+                
+                if (!subsanado) {
+                    pendientes++;
+                }
+            });
+            
+            // Actualizar UI
+            document.getElementById('contador-total').textContent = total;
+            document.getElementById('contador-conformes').textContent = conformes;
+            document.getElementById('contador-evaluados').textContent = evaluados;
+            document.getElementById('contador-subsanados').textContent = subsanados;
+            document.getElementById('contador-pendientes').textContent = pendientes;
+        }
+        
+        // ============================================
+        // 10. RECARGAR DESDE FIREBASE
+        // ============================================
+        
+        function recargarDesdeFirebase() {
+            cargarTodasObservacionesFirebase();
+        }
+        
+        // ============================================
+        // 11. CARGA DESDE LOCALSTORAGE (RESPALDO)
+        // ============================================
+        
+        function cargarDesdeLocalStorage() {
+            try {
+                const datos = localStorage.getItem('observaciones_firebase');
+                if (datos) {
+                    const observaciones = JSON.parse(datos);
+                    renderizarObservaciones(observaciones);
+                    mostrarMensaje('📂 Cargado desde respaldo local', 'info');
+                    document.getElementById('info-carga').textContent = `📂 ${observaciones.length} (respaldo)`;
+                }
+            } catch (error) {
+                console.error('Error al cargar respaldo:', error);
+            }
+        }
+        
+        // ============================================
+        // 12. EXPORTAR PDF
+        // ============================================
+        
+        function exportarPDF() {
+            mostrarMensaje('📄 Generando PDF...', 'info');
+            // Aquí va tu lógica de exportación a PDF
+            // window.print() o usar librería como jsPDF
+            window.print();
+        }
+        
+        // ============================================
+        // 13. LOADING Y MENSAJES
+        // ============================================
+        
+        function mostrarLoading(mostrar) {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) {
+                overlay.classList.toggle('active', mostrar);
+            }
+        }
+        
+        function mostrarMensaje(texto, tipo = 'info') {
+            const container = document.getElementById('mensajes-container');
+            if (!container) return;
+            
+            const mensaje = document.createElement('div');
+            mensaje.className = `mensaje mensaje-${tipo}`;
+            mensaje.textContent = texto;
+            
+            container.appendChild(mensaje);
+            
+            setTimeout(() => {
+                mensaje.style.opacity = '0';
+                mensaje.style.transition = 'opacity 0.5s';
+                setTimeout(() => mensaje.remove(), 500);
+            }, 4000);
+        }
+        
+        // ============================================
+        // 14. INICIALIZACIÓN
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Iniciando aplicación...');
+            
+            // Cargar todas las observaciones de Firebase
+            cargarTodasObservacionesFirebase();
+            
+            // Actualizar contadores cada 10 segundos
+            setInterval(actualizarContadores, 10000);
+        });
+        
+        // ============================================
+        // 15. EXPONER FUNCIONES GLOBALES
+        // ============================================
+        
+        // Para que los botones HTML puedan llamar estas funciones
+        window.enviarTodasParaRevision = enviarTodasParaRevision;
+        window.exportarPDF = exportarPDF;
+        window.recargarDesdeFirebase = recargarDesdeFirebase;
+        
+        console.log('✅ Aplicación lista');
+    </script>
+</body>
+</html>
