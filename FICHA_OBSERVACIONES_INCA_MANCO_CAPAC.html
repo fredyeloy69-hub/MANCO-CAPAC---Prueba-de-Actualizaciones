@@ -143,8 +143,58 @@ input:checked+.sl:before{transform:translateX(20px)}
 /* BADGE ROL en header */
 .rol-badge-proy{background:rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid rgba(255,255,255,.4)}
 .rol-badge-eval{background:#92400e;border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid #78350f}
+/* BOTÓN ENVIAR */
+.btn-enviar{background:#d97706;color:white;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;animation:pulso-btn 2s infinite}
+.btn-enviar:hover{background:#b45309}
+.btn-enviar.eval-mode{background:#7c3aed}
+.btn-enviar.eval-mode:hover{background:#6d28d9}
+@keyframes pulso-btn{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.4)}50%{box-shadow:0 0 0 6px rgba(217,119,6,0)}}
+/* BLOQUE REVISIÓN */
+.rev-block{margin-top:6px;border-top:2px dashed #d97706;padding-top:6px}
+.rev-title{font-size:10px;font-weight:700;color:#92400e;background:#fffbeb;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:4px}
+.rev-fields{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px}
+.rev-sw-wrap{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.estado-ronda{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;display:inline-block}
+.er-pend{background:#fdecea;color:#c0392b}
+.er-sub{background:#e6f7ed;color:#1a7a45}
+.er-conf{background:#e6f7ed;color:#1a7a45}
+.er-reit{background:#fdecea;color:#c0392b}
 #loading p{color:var(--azul);font-weight:600;font-size:14px}
-</style>
+/* ── MODO OSCURO ── */
+body.dark{--gris-fondo:#111827;--texto:#f9fafb;--borde:#374151}
+body.dark .controles{background:#1f2937;border-color:#374151}
+body.dark .controles select,body.dark .controles input[type=text]{background:#374151;color:#f9fafb;border-color:#4b5563}
+body.dark table{background:#1f2937}
+body.dark th{background:#111827;color:#9ca3af}
+body.dark td{border-color:#374151;color:#f9fafb}
+body.dark tr:hover td{background:#374151}
+body.dark tr.sub-ok td{background:#064e3b!important;color:#6ee7b7}
+body.dark .inp-r,body.dark .inp-f,body.dark .com-text{color:#f9fafb;background:transparent}
+body.dark .inp-r:focus,body.dark .inp-f:focus,body.dark .com-text:focus{background:#374151}
+body.dark .sec-hdr{filter:brightness(.85)}
+body.dark .sub-hdr{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
+body.dark #login-box,body.dark #confirm-box{background:#1f2937;color:#f9fafb}
+body.dark #login-box h2,body.dark #confirm-box h3{color:#93c5fd}
+body.dark #login-box p,body.dark #confirm-box p{color:#9ca3af}
+body.dark #login-box input{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .rol-opt{background:#374151;border-color:#4b5563}
+body.dark .rol-opt:hover{background:#4b5563}
+body.dark .rol-opt.act-proy{background:#1e3a5f;border-color:#3b82f6}
+body.dark .rol-opt.act-eval{background:#451a03;border-color:#d97706}
+body.dark .rol-label{color:#f9fafb}
+body.dark .rol-desc{color:#9ca3af}
+body.dark .bitacora{border-color:#374151;color:#9ca3af}
+body.dark .paste-hint{color:#4b5563}
+body.dark .ev-conf{border-color:#059669;color:#6ee7b7;background:transparent}
+body.dark .ev-reit{border-color:#dc2626;color:#fca5a5;background:transparent}
+body.dark .ev-conf-act{background:#059669;color:white}
+body.dark .ev-reit-act{background:#dc2626;color:white}
+body.dark td.c-eval{background:rgba(120,80,20,.25)!important}
+body.dark td.c-fec-eval{background:rgba(120,80,20,.2)!important;color:#fbbf24!important}
+body.dark td.c-obs2{background:rgba(109,40,217,.2)!important}
+body.dark .btn-clr{background:#7f1d1d;color:#fca5a5}
+body.dark .contenido .seccion{background:#1f2937}
+body.dark #stb{background:#374151}
 </head>
 <body>
 
@@ -195,6 +245,8 @@ input:checked+.sl:before{transform:translateX(20px)}
     <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
       <div class="badge"><span class="dot" id="dot"></span><span id="badge-txt">Conectando…</span></div>
       <span id="rol-badge" class="rol-badge-proy"></span>
+      <button id="btn-enviar" class="btn-enviar" onclick="window.enviarRonda()" style="display:none">📤 Enviar para Evaluación</button>
+      <button id="btn-dark" onclick="window.toggleDark()" title="Modo oscuro/claro" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;border-radius:20px;padding:4px 12px;font-size:13px;cursor:pointer">🌙</button>
       <div id="user-badge" onclick="window.cambiarUsuario()" title="Cambiar usuario">👤 <span id="user-name">—</span></div>
     </div>
   </div>
@@ -239,6 +291,7 @@ input:checked+.sl:before{transform:translateX(20px)}
     <div class="stat t"><div class="n" id="ct">202</div><div class="l">TOTAL</div></div>
     <div class="stat s"><div class="n" id="cs">0</div><div class="l">SUBSANADOS</div></div>
     <div class="stat p"><div class="n" id="cp">202</div><div class="l">PENDIENTES</div></div>
+    <div class="stat" style="text-align:center"><div class="n" id="ce" style="color:#7c3aed">0</div><div class="l" style="color:#6b7280">EVALUADOS</div></div>
   </div>
 </div>
 
@@ -284,7 +337,6 @@ window.doLogin = function() {
   if (!v) { document.getElementById('login-input').focus(); return; }
   if (!currentRol) { document.getElementById('login-error').style.display = 'block'; return; }
   currentUser = v;
-  // Actualizar badge en header
   document.getElementById('user-name').textContent = v;
   const rolBadge = document.getElementById('rol-badge');
   if (rolBadge) {
@@ -294,8 +346,96 @@ window.doLogin = function() {
   document.getElementById('login-modal').style.display = 'none';
   sessionStorage.setItem('imc_user', v);
   sessionStorage.setItem('imc_rol', currentRol);
-  // Aplicar restricciones según rol
+  mostrarBtnEnviar();
   aplicarRol();
+};
+
+function mostrarBtnEnviar() {
+  const btn = document.getElementById('btn-enviar');
+  if (!btn) return;
+  // Leer estado de ronda desde Firebase
+  const rondaActual = (window._metaRonda) || 1;
+  if (currentRol === 'proyectista') {
+    btn.style.display = 'inline-flex';
+    btn.className = 'btn-enviar';
+    btn.innerHTML = `📤 Enviar para Evaluación (Ronda ${rondaActual})`;
+  } else if (currentRol === 'evaluador') {
+    btn.style.display = 'inline-flex';
+    btn.className = 'btn-enviar eval-mode';
+    btn.innerHTML = `🔍 Enviar para su Revisión (Ronda ${rondaActual})`;
+  }
+}
+
+// ─── SISTEMA DE RONDAS / REVISIONES ───
+window._metaRonda = 1; // ronda actual global
+
+window.enviarRonda = async function() {
+  const ronda = window._metaRonda || 1;
+  if (currentRol === 'proyectista') {
+    const ok = await pedirConfirm(
+      `Enviar Ronda ${ronda} para Evaluación`,
+      `¿Confirmas que todas las observaciones que pudiste levantar están marcadas? Se notificará al evaluador que puede revisar la Ronda ${ronda}.`
+    );
+    if (!ok) return;
+    const ahora = new Date();
+    const fh = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+    // Guardar en Firebase que la ronda fue enviada
+    const meta = { ronda, estado: 'enviado_a_evaluador', quien: currentUser, fecha: fh };
+    const metaRef = ref(db, 'meta_ronda');
+    update(metaRef, meta);
+    notif(`✅ Ronda ${ronda} enviada para evaluación`, '#166534');
+  } else if (currentRol === 'evaluador') {
+    const ok = await pedirConfirm(
+      `Enviar Ronda ${ronda} para Revisión`,
+      `¿Confirmas que revisaste todas las observaciones? Las observaciones con "SE REITERA" iniciarán una Ronda ${ronda+1} para el proyectista.`
+    );
+    if (!ok) return;
+    const ahora = new Date();
+    const fh = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+    // Abrir nueva ronda — agregar revisión a obs con SE REITERA
+    const nuevaRonda = ronda + 1;
+    DATA.forEach(o => {
+      const s = E[o.id] || {};
+      if (s.eval_v === 'reitera') {
+        // Guardar histórico de ronda anterior
+        if (!E[o.id]) E[o.id] = {};
+        const hist = E[o.id].historial || [];
+        hist.push({
+          ronda,
+          ok: s.ok || false,
+          resp: s.resp || '',
+          fecha: s.fecha || '',
+          coment: s.coment || '',
+          eval_v: 'reitera',
+          eval_coment: s.eval_coment || '',
+          eval_nombre: s.eval_nombre || '',
+          eval_fecha: s.eval_fecha || ''
+        });
+        E[o.id].historial = hist;
+        // Resetear para nueva ronda
+        const patch = {};
+        patch[o.id + '/historial'] = hist;
+        patch[o.id + '/ok'] = false;
+        patch[o.id + '/eval_v'] = '';
+        patch[o.id + '/eval_coment'] = '';
+        patch[o.id + '/eval_nombre'] = '';
+        patch[o.id + '/eval_fecha'] = '';
+        patch[o.id + '/resp'] = '';
+        patch[o.id + '/fecha'] = '';
+        patch[o.id + '/coment'] = '';
+        patch[o.id + '/imgs'] = [];
+        patch[o.id + '/eval_imgs'] = [];
+        update(dbRef, patch);
+      }
+    });
+    // Actualizar meta ronda
+    const meta = { ronda: nuevaRonda, estado: 'enviado_a_proyectista', quien: currentUser, fecha: fh };
+    const metaRef = ref(db, 'meta_ronda');
+    update(metaRef, meta);
+    window._metaRonda = nuevaRonda;
+    mostrarBtnEnviar();
+    notif(`🔄 Ronda ${nuevaRonda} iniciada para el proyectista`, '#7c3aed');
+  }
 };
 
 window.cambiarUsuario = function() {
@@ -369,9 +509,18 @@ function aplicarRol() {
       rolBadge.className = savedRol === 'evaluador' ? 'rol-badge-eval' : 'rol-badge-proy';
     }
     document.getElementById('login-modal').style.display = 'none';
-    // aplicarRol se llama después de que build() renderice la tabla
   }
 })();
+
+// Leer meta de ronda desde Firebase
+const metaRondaRef = ref(db, 'meta_ronda');
+onValue(metaRondaRef, (snap) => {
+  const meta = snap.val();
+  if (meta && meta.ronda) {
+    window._metaRonda = meta.ronda;
+    if (currentRol) mostrarBtnEnviar();
+  }
+});
 
 // ─── MODAL CONFIRMACION ───
 let _confirmCb = null;
@@ -445,11 +594,16 @@ function updStats() {
     const r = document.getElementById('r_' + o.id);
     return r && !r.classList.contains('oculto');
   });
-  let s = 0;
-  vis.forEach(o => { if ((E[o.id] || {}).ok) s++; });
+  let sub = 0, eval_ = 0;
+  vis.forEach(o => {
+    const s = E[o.id] || {};
+    if (s.ok) sub++;
+    if (s.eval_v === 'conforme' || s.eval_v === 'reitera') eval_++;
+  });
   document.getElementById('ct').textContent = vis.length;
-  document.getElementById('cs').textContent = s;
-  document.getElementById('cp').textContent = vis.length - s;
+  document.getElementById('cs').textContent = sub;
+  document.getElementById('cp').textContent = vis.length - sub;
+  document.getElementById('ce').textContent = eval_;
 }
 
 // ─── CONSTRUIR TABLA ───
@@ -481,6 +635,7 @@ function build() {
       <th class="c-fec">FECHA LEVANT.</th><th class="c-com">COMENTARIO</th>
       <th class="c-eval" style="background:#fffbeb;color:#92400e;min-width:200px">EVALUADOR</th>
       <th class="c-fec-eval" style="background:#fffbeb;color:#92400e;width:110px">FECHA REVISIÓN</th>
+      <th class="c-obs2" style="background:#fdf4ff;color:#7c3aed;min-width:220px">OBSERVACIÓN 2</th>
     </tr></thead><tbody>`;
     for (const [sub, obs] of Object.entries(subs)) {
       if (sub !== '__') h += `<tr class="sr"><td colspan="6"><div class="sub-hdr">🔹 ${sub}</div></td></tr>`;
@@ -522,9 +677,28 @@ function buildRow(o) {
       <button class="com-img-del" onclick="delImg('${o.id}',${i},'e')" title="Eliminar">✕</button>
     </div>`).join('');
 
+  // Historial de rondas anteriores
+  const historial = s.historial || [];
+  const histHtml = historial.map((h, i) => `
+    <div class="rev-block">
+      <span class="rev-title">📋 REVISIÓN ${h.ronda} — ${h.eval_v === 'reitera' ? '<span style="color:#c0392b">SE REITERÓ</span>' : '<span style="color:#1a7a45">CONFORME</span>'}</span>
+      <div style="font-size:11px;color:#374151;margin:3px 0">
+        <b>Proyectista:</b> ${h.resp||'—'} &nbsp;|&nbsp; <b>Fecha:</b> ${h.fecha||'—'}
+      </div>
+      ${h.coment ? `<div style="font-size:11px;color:#6b7280;font-style:italic">"${h.coment}"</div>` : ''}
+      <div style="font-size:11px;color:#92400e;margin-top:3px">
+        <b>Evaluador:</b> ${h.eval_nombre||'—'} &nbsp;|&nbsp; ${h.eval_fecha||'—'}
+      </div>
+      ${h.eval_coment ? `<div style="font-size:11px;color:#92400e;font-style:italic">"${h.eval_coment}"</div>` : ''}
+    </div>`).join('');
+
   return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}">
-    <td class="c-num">${o.num}</td>
-    <td class="c-obs"><span class="obs-t">${o.obs}</span>${bitHtml}</td>
+    <td class="c-num">${o.num}${historial.length ? `<br><span style="font-size:9px;color:#d97706;font-weight:700">R${historial.length+1}</span>` : ''}</td>
+    <td class="c-obs">
+      <span class="obs-t">${o.obs}</span>
+      ${histHtml}
+      ${bitHtml}
+    </td>
     <td class="c-est">
       <div style="display:flex;align-items:center;justify-content:center;gap:6px">
         <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)"><span class="sl"></span></label>
@@ -561,10 +735,110 @@ function buildRow(o) {
     <td class="c-fec-eval" style="background:rgba(255,248,220,.3);font-size:11px;color:#92400e;font-weight:600;text-align:center;vertical-align:middle">
       ${s.eval_fecha ? s.eval_fecha.replace(' ','\n') : '—'}
     </td>
+    <td class="c-obs2" style="background:rgba(253,244,255,.4);vertical-align:top;padding:8px">
+      ${s.eval_v === 'reitera' ? buildObs2(o.id, o.obs, s) : '<span style="font-size:11px;color:#d1d5db">—</span>'}
+    </td>
   </tr>`;
 }
 
-// ─── EXPONER A HTML (onclick usa window._) ───
+// ─── OBSERVACIÓN 2 ───
+function buildObs2(id, obsOriginal, s) {
+  const obs2 = s.obs2 || '';
+  const tieneObs2 = !!obs2;
+  if (tieneObs2) {
+    return `<div>
+      <span style="font-size:10px;font-weight:700;color:#7c3aed;background:#f3e8ff;padding:2px 8px;border-radius:10px">↩ NUEVA OBSERVACIÓN</span>
+      <div style="font-size:12px;color:#374151;margin-top:5px;line-height:1.4">${obs2}</div>
+      ${currentRol === 'evaluador' ? `<button onclick="window.editarObs2('${id}','${obsOriginal.replace(/'/g,"\\'")}')" style="margin-top:4px;font-size:10px;color:#7c3aed;background:none;border:1px solid #7c3aed;border-radius:6px;padding:2px 8px;cursor:pointer">✏️ Editar</button>` : ''}
+    </div>`;
+  }
+  // Solo el evaluador puede agregar obs2
+  if (currentRol === 'evaluador') {
+    return `<button onclick="window.abrirModalObs2('${id}','${obsOriginal.replace(/'/g,"\\'")}')" 
+      style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;width:100%">
+      + Agregar Observación 2
+    </button>`;
+  }
+  return `<span style="font-size:11px;color:#7c3aed;font-style:italic">Pendiente del evaluador…</span>`;
+}
+
+// Modal para obs2
+window.abrirModalObs2 = function(id, obsOriginal) {
+  // Crear modal dinámico
+  let m = document.getElementById('obs2-modal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'obs2-modal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:flex;align-items:center;justify-content:center';
+    m.innerHTML = `<div style="background:white;border-radius:16px;padding:28px 32px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+      <h3 style="color:#7c3aed;font-size:16px;margin-bottom:6px">Observación 2</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:16px">¿Copiar la observación original o escribir una nueva?</p>
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <button id="obs2-copiar" style="flex:1;background:#7c3aed;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">📋 Copiar original</button>
+        <button id="obs2-nueva" style="flex:1;background:white;color:#7c3aed;border:2px solid #7c3aed;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">✏️ Escribir nueva</button>
+      </div>
+      <textarea id="obs2-texto" style="width:100%;border:2px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;min-height:80px;resize:vertical;font-family:inherit;display:none" placeholder="Escribe la nueva observación..."></textarea>
+      <div style="display:flex;gap:10px;margin-top:14px;justify-content:flex-end">
+        <button id="obs2-cancelar" style="background:#f3f4f6;color:#6b7280;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button id="obs2-guardar" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">Guardar</button>
+      </div>
+    </div>`;
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+  const txt = document.getElementById('obs2-texto');
+  txt.style.display = 'none';
+  txt.value = '';
+  document.getElementById('obs2-copiar').onclick = () => {
+    txt.value = obsOriginal;
+    txt.style.display = 'block';
+    txt.focus();
+  };
+  document.getElementById('obs2-nueva').onclick = () => {
+    txt.value = '';
+    txt.style.display = 'block';
+    txt.focus();
+  };
+  document.getElementById('obs2-cancelar').onclick = () => { m.style.display = 'none'; };
+  document.getElementById('obs2-guardar').onclick = () => {
+    const val = txt.value.trim();
+    if (!val) { notif('Escribe o copia la observación primero', '#991b1b'); return; }
+    saveField(id, 'obs2', val);
+    if (!E[id]) E[id] = {};
+    E[id].obs2 = val;
+    m.style.display = 'none';
+    // Actualizar celda sin rebuild completo
+    const cell = document.querySelector(`#r_${id} .c-obs2`);
+    if (cell) cell.innerHTML = buildObs2(id, obsOriginal, E[id]);
+    notif('Observación 2 guardada', '#7c3aed');
+  };
+};
+
+window.editarObs2 = function(id, obsOriginal) {
+  if (!E[id]) E[id] = {};
+  const actual = E[id].obs2 || '';
+  E[id].obs2 = '';
+  saveField(id, 'obs2', '');
+  window.abrirModalObs2(id, obsOriginal);
+  setTimeout(() => {
+    const txt = document.getElementById('obs2-texto');
+    if (txt) { txt.value = actual; txt.style.display = 'block'; }
+  }, 100);
+};
+
+// ─── MODO OSCURO ───
+window.toggleDark = function() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('imc_dark', isDark ? '1' : '0');
+  document.getElementById('btn-dark').textContent = isDark ? '☀️' : '🌙';
+};
+// Aplicar al cargar
+if (localStorage.getItem('imc_dark') === '1') {
+  document.body.classList.add('dark');
+  const btn = document.getElementById('btn-dark');
+  if (btn) btn.textContent = '☀️';
+}
 window._tog = async function(id, v) {
   if (!v) {
     const chk = document.querySelector(`#r_${id} input[type=checkbox]`);
@@ -685,10 +959,6 @@ window.filtroRapido = function(tipo) {
   document.getElementById('fq-todos').classList.toggle('act', tipo==='todos');
   document.getElementById('fq-sub').classList.toggle('act', tipo==='sub');
   document.getElementById('fq-pend').classList.toggle('act', tipo==='pend');
-  const sel = document.getElementById('fe');
-  if (tipo==='todos') sel.value='';
-  else if (tipo==='sub') sel.value='sub';
-  else sel.value='pend';
   window.filtrar();
 };
 
