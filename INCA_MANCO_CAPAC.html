@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha Observaciones — INCA MANCO CAPAC</title>
+<style>
+:root{--azul:#1a4f8a;--verde:#1a7a45;--verde-claro:#e6f7ed;--rojo:#c0392b;--rojo-claro:#fdecea;--gris:#6b7280;--gris-fondo:#f5f7fa;--borde:#d1d5db;--texto:#1f2937}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',Arial,sans-serif;background:var(--gris-fondo);color:var(--texto);font-size:13px}
+.header{background:var(--azul);color:white;padding:14px 20px;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.header h1{font-size:15px;font-weight:700}
+.header .sub{font-size:11px;opacity:.85;margin-top:2px}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.3)}
+.dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulso 1.4s infinite}
+.dot.off{background:#f87171;animation:none}
+@keyframes pulso{0%,100%{opacity:1}50%{opacity:.4}}
+.controles{background:white;border-bottom:1px solid var(--borde);padding:10px 20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:57px;z-index:90}
+.controles select,.controles input[type=text]{border:1px solid var(--borde);border-radius:6px;padding:5px 10px;font-size:12px;background:white;outline:none}
+.controles select:focus,.controles input:focus{border-color:var(--azul)}
+.controles label{font-size:11px;color:var(--gris);font-weight:600}
+.btn-clr{background:#fee2e2;color:var(--rojo);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-export{background:#166534;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer}
+.btn-export:hover{background:#14532d}
+.btn-drive{background:#1967d2;color:white;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.btn-drive:hover{background:#1558b0}
+.stats-bar{margin-left:auto;display:flex;gap:14px}
+.stat{text-align:center}
+.stat .n{font-size:18px;font-weight:700}
+.stat .l{font-size:10px;color:var(--gris)}
+.stat.p .n{color:var(--rojo)}
+.stat.s .n{color:var(--verde)}
+.stat.t .n{color:var(--azul)}
+#notif{position:fixed;top:70px;right:20px;z-index:200;background:#1e40af;color:white;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;box-shadow:0 4px 12px rgba(0,0,0,.2);transform:translateY(-20px);opacity:0;transition:all .3s;pointer-events:none;max-width:280px}
+#notif.show{transform:translateY(0);opacity:1}
+.contenido{padding:16px 20px;max-width:1200px;margin:0 auto}
+.seccion{margin-bottom:20px}
+.sec-hdr{color:white;padding:8px 16px;border-radius:8px 8px 0 0;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:space-between}
+.sec-hdr .ss{font-size:11px;font-weight:400;opacity:.85}
+.sub-hdr{background:#dbeafe;color:var(--azul);padding:6px 16px;font-weight:600;font-size:12px;border-left:3px solid var(--azul);border-top:1px solid #bfdbfe}
+.tabla-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;background:white}
+th{background:#f1f5f9;font-size:11px;font-weight:700;color:var(--gris);text-transform:uppercase;letter-spacing:.4px;padding:7px 10px;border-bottom:1px solid var(--borde);white-space:nowrap}
+td{padding:7px 10px;border-bottom:1px solid #f0f0f0;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbfc}
+tr.sub-ok td{background:var(--verde-claro)!important;color:#15543a}
+.obs-tacha{text-decoration:line-through;color:#9ca3af}
+.c-num{width:42px;text-align:center;font-weight:700;color:var(--azul)}
+.c-obs{min-width:260px}
+.c-est{width:130px;text-align:center}
+.c-res{width:140px}
+.c-fec{width:110px}
+.c-com{min-width:180px}
+.sw{position:relative;display:inline-block;width:44px;height:24px}
+.sw input{opacity:0;width:0;height:0}
+.sl{position:absolute;cursor:pointer;inset:0;background:#e5e7eb;border-radius:24px;transition:.25s}
+.sl:before{position:absolute;content:"";height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.25s;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+input:checked+.sl{background:var(--verde)}
+input:checked+.sl:before{transform:translateX(20px)}
+.elbl{font-size:11px;font-weight:700}
+.elbl.ok{color:var(--verde)}
+.elbl.pend{color:var(--rojo)}
+.inp-r,.inp-f,.inp-c{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;color:inherit;font-family:inherit;resize:none;transition:border .2s,background .2s}
+.inp-r:focus,.inp-f:focus{outline:none;border-color:var(--azul);background:white}
+.inp-c{min-height:36px;max-height:80px;overflow-y:auto}
+/* Celda de comentario con soporte imagen */
+.com-cell{position:relative;min-height:40px;width:100%}
+.com-text{width:100%;border:1px solid transparent;background:transparent;border-radius:4px;padding:3px 6px;font-size:12px;font-family:inherit;resize:none;min-height:32px;max-height:60px;overflow-y:auto;transition:border .2s,background .2s;display:block}
+.com-text:focus{outline:none;border-color:var(--azul);background:white}
+.com-imgs{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
+.com-img-wrap{position:relative;display:inline-block}
+.com-img-wrap img{max-width:120px;max-height:80px;border-radius:4px;border:1px solid var(--borde);cursor:pointer;display:block}
+.com-img-wrap img:hover{border-color:var(--azul)}
+.com-img-del{position:absolute;top:-4px;right:-4px;background:var(--rojo);color:white;border:none;border-radius:50%;width:16px;height:16px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.paste-hint{font-size:10px;color:#9ca3af;margin-top:2px}
+/* Modal imagen grande */
+#img-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center}
+#img-modal.open{display:flex}
+#img-modal img{max-width:90vw;max-height:88vh;border-radius:8px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+#img-modal-close{position:absolute;top:16px;right:20px;color:white;font-size:28px;cursor:pointer;font-weight:700;line-height:1}
+.oculto{display:none!important}
+/* Columna evaluador */
+.c-eval{min-width:170px;background:rgba(255,248,220,.3)}
+.eval-cell{position:relative;min-height:40px}
+.eval-cell .com-text{background:rgba(255,248,200,.4)}
+.eval-cell .com-text:focus{background:white}
+/* Botones veredicto evaluador */
+.eval-veredicto{display:flex;gap:5px;margin-bottom:5px;flex-wrap:wrap}
+.btn-eval{border:2px solid;border-radius:6px;padding:3px 8px;font-size:10px;font-weight:700;cursor:pointer;background:white;transition:all .2s}
+.ev-conf{border-color:#1a7a45;color:#1a7a45} .ev-conf:hover{background:#e6f7ed}
+.ev-reit{border-color:#c0392b;color:#c0392b} .ev-reit:hover{background:#fdecea}
+.ev-conf-act{border-color:#1a7a45;background:#1a7a45;color:white}
+.ev-reit-act{border-color:#c0392b;background:#c0392b;color:white}
+/* Bitácora */
+.bitacora{font-size:10px;color:#6b7280;margin-top:4px;border-top:1px dashed #e5e7eb;padding-top:3px;line-height:1.6}
+.bit-sub{color:var(--verde);font-weight:600}
+.bit-rev{color:var(--rojo);font-weight:600}
+#stb{position:fixed;bottom:20px;right:20px;background:var(--azul);color:white;border:none;border-radius:50%;width:38px;height:38px;font-size:18px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25);display:none;z-index:200}
+#loading{position:fixed;inset:0;background:rgba(255,255,255,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:12px}
+#loading .spin{width:40px;height:40px;border:4px solid #e5e7eb;border-top-color:var(--azul);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+/* LOGIN MODAL */
+#login-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;display:flex;align-items:center;justify-content:center}
+#login-box{background:white;border-radius:16px;padding:36px 40px;width:360px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center}
+#login-box h2{color:var(--azul);font-size:18px;margin-bottom:6px}
+#login-box p{color:var(--gris);font-size:12px;margin-bottom:20px}
+#login-box input{width:100%;border:2px solid var(--borde);border-radius:8px;padding:10px 14px;font-size:14px;outline:none;margin-bottom:14px}
+#login-box input:focus{border-color:var(--azul)}
+#login-box button{width:100%;background:var(--azul);color:white;border:none;border-radius:8px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
+#login-box button:hover{background:#143f72}
+#login-box .logo{font-size:40px;margin-bottom:12px}
+/* BADGE USUARIO */
+#user-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.2);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:600;border:1px solid rgba(255,255,255,.3);cursor:pointer}
+#user-badge:hover{background:rgba(255,255,255,.3)}
+/* MODAL CONFIRMACION */
+#confirm-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;align-items:center;justify-content:center}
+#confirm-modal.open{display:flex}
+#confirm-box{background:white;border-radius:12px;padding:28px 32px;width:340px;box-shadow:0 12px 40px rgba(0,0,0,.25);text-align:center}
+#confirm-box h3{font-size:16px;color:var(--texto);margin-bottom:8px}
+#confirm-box p{font-size:13px;color:var(--gris);margin-bottom:22px;line-height:1.5}
+#confirm-box .btn-row{display:flex;gap:10px;justify-content:center}
+#confirm-box .btn-si{background:var(--verde);color:white;border:none;border-radius:8px;padding:9px 28px;font-size:13px;font-weight:700;cursor:pointer}
+#confirm-box .btn-no{background:#f3f4f6;color:var(--gris);border:none;border-radius:8px;padding:9px 28px;font-size:13px;font-weight:700;cursor:pointer}
+#confirm-box .btn-si:hover{background:#166534}
+#confirm-box .btn-no:hover{background:#e5e7eb}
+/* FILTROS RAPIDOS */
+.filtros-rapidos{display:flex;gap:6px;align-items:center}
+.fq{border:2px solid var(--borde);background:white;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s}
+.fq.todos{color:var(--azul)} .fq.todos.act{background:var(--azul);color:white;border-color:var(--azul)}
+.fq.sub{color:var(--verde)} .fq.sub.act{background:var(--verde);color:white;border-color:var(--verde)}
+.fq.pend{color:var(--rojo)} .fq.pend.act{background:var(--rojo);color:white;border-color:var(--rojo)}
+/* ROL SELECTOR */
+.rol-selector{display:flex;gap:10px;margin-bottom:14px}
+.rol-opt{flex:1;border:2px solid var(--borde);border-radius:10px;padding:12px 8px;cursor:pointer;text-align:center;transition:all .2s;background:white}
+.rol-opt:hover{border-color:var(--azul);background:#f0f6ff}
+.rol-opt.act-proy{border-color:var(--azul);background:#e8f0fb}
+.rol-opt.act-eval{border-color:#92400e;background:#fffbeb}
+.rol-icon{font-size:24px;margin-bottom:4px}
+.rol-label{font-weight:700;font-size:13px;color:var(--texto)}
+.rol-desc{font-size:10px;color:var(--gris);margin-top:2px}
+/* BADGE ROL en header */
+.rol-badge-proy{background:rgba(255,255,255,.2);border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid rgba(255,255,255,.4)}
+.rol-badge-eval{background:#92400e;border-radius:12px;padding:2px 10px;font-size:10px;font-weight:700;color:white;border:1px solid #78350f}
+/* BOTÓN ENVIAR */
+.btn-enviar{background:#d97706;color:white;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;animation:pulso-btn 2s infinite}
+.btn-enviar:hover{background:#b45309}
+.btn-enviar.eval-mode{background:#7c3aed}
+.btn-enviar.eval-mode:hover{background:#6d28d9}
+@keyframes pulso-btn{0%,100%{box-shadow:0 0 0 0 rgba(217,119,6,.4)}50%{box-shadow:0 0 0 6px rgba(217,119,6,0)}}
+/* BLOQUE REVISIÓN */
+.rev-block{margin-top:6px;border-top:2px dashed #d97706;padding-top:6px}
+.rev-title{font-size:10px;font-weight:700;color:#92400e;background:#fffbeb;padding:2px 8px;border-radius:10px;display:inline-block;margin-bottom:4px}
+.rev-fields{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:4px}
+.rev-sw-wrap{display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.estado-ronda{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:700;display:inline-block}
+.er-pend{background:#fdecea;color:#c0392b}
+.er-sub{background:#e6f7ed;color:#1a7a45}
+.er-conf{background:#e6f7ed;color:#1a7a45}
+.er-reit{background:#fdecea;color:#c0392b}
+#loading p{color:var(--azul);font-weight:600;font-size:14px}
+/* ── MODO OSCURO ── */
+body.dark{--gris-fondo:#111827;--texto:#f9fafb;--borde:#374151}
+body.dark .controles{background:#1f2937;border-color:#374151}
+body.dark .controles select,body.dark .controles input[type=text]{background:#374151;color:#f9fafb;border-color:#4b5563}
+body.dark table{background:#1f2937}
+body.dark th{background:#111827;color:#9ca3af}
+body.dark td{border-color:#374151;color:#f9fafb}
+body.dark tr:hover td{background:#374151}
+body.dark tr.sub-ok td{background:#064e3b!important;color:#6ee7b7}
+body.dark .inp-r,body.dark .inp-f,body.dark .com-text{color:#f9fafb;background:transparent}
+body.dark .inp-r:focus,body.dark .inp-f:focus,body.dark .com-text:focus{background:#374151}
+body.dark .sec-hdr{filter:brightness(.85)}
+body.dark .sub-hdr{background:#1e3a5f;color:#93c5fd;border-color:#3b82f6}
+body.dark #login-box,body.dark #confirm-box{background:#1f2937;color:#f9fafb}
+body.dark #login-box h2,body.dark #confirm-box h3{color:#93c5fd}
+body.dark #login-box p,body.dark #confirm-box p{color:#9ca3af}
+body.dark #login-box input{background:#374151;border-color:#4b5563;color:#f9fafb}
+body.dark .rol-opt{background:#374151;border-color:#4b5563}
+body.dark .rol-opt:hover{background:#4b5563}
+body.dark .rol-opt.act-proy{background:#1e3a5f;border-color:#3b82f6}
+body.dark .rol-opt.act-eval{background:#451a03;border-color:#d97706}
+body.dark .rol-label{color:#f9fafb}
+body.dark .rol-desc{color:#9ca3af}
+body.dark .bitacora{border-color:#374151;color:#9ca3af}
+body.dark .paste-hint{color:#4b5563}
+body.dark .ev-conf{border-color:#059669;color:#6ee7b7;background:transparent}
+body.dark .ev-reit{border-color:#dc2626;color:#fca5a5;background:transparent}
+body.dark .ev-conf-act{background:#059669;color:white}
+body.dark .ev-reit-act{background:#dc2626;color:white}
+body.dark td.c-eval{background:rgba(120,80,20,.25)!important}
+body.dark td.c-fec-eval{background:rgba(120,80,20,.2)!important;color:#fbbf24!important}
+body.dark td.c-obs2{background:rgba(109,40,217,.2)!important}
+body.dark .btn-clr{background:#7f1d1d;color:#fca5a5}
+body.dark .contenido .seccion{background:#1f2937}
+body.dark #stb{background:#374151}
+</head>
+<body>
+
+<!-- LOGIN MODAL -->
+<div id="login-modal">
+  <div id="login-box">
+    <div class="logo">🏗️</div>
+    <h2>Ficha de Observaciones</h2>
+    <p>I.E. Pública Militar "Inca Manco Capac"<br>Ingresa tus datos para continuar</p>
+    <input type="text" id="login-input" placeholder="Tu nombre completo..." maxlength="40" onkeydown="if(event.key==='Enter')window.doLogin()">
+    <div class="rol-selector">
+      <div class="rol-opt" id="rol-proy" onclick="window.selRol('proyectista')">
+        <div class="rol-icon">✏️</div>
+        <div class="rol-label">Proyectista</div>
+        <div class="rol-desc">Levanto observaciones</div>
+      </div>
+      <div class="rol-opt" id="rol-eval" onclick="window.selRol('evaluador')">
+        <div class="rol-icon">🔍</div>
+        <div class="rol-label">Evaluador</div>
+        <div class="rol-desc">Reviso y apruebo</div>
+      </div>
+    </div>
+    <div id="login-error" style="color:#c0392b;font-size:12px;margin-bottom:10px;display:none">Selecciona un rol para continuar</div>
+    <button onclick="window.doLogin()">Ingresar</button>
+  </div>
+</div>
+
+<!-- CONFIRM MODAL -->
+<div id="confirm-modal">
+  <div id="confirm-box">
+    <h3 id="confirm-title">¿Estás seguro?</h3>
+    <p id="confirm-msg"></p>
+    <div class="btn-row">
+      <button class="btn-no" onclick="window.confirmResp(false)">No, cancelar</button>
+      <button class="btn-si" onclick="window.confirmResp(true)">Sí, confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div id="loading"><div class="spin"></div><p>Conectando a Firebase…</p></div>
+
+<div class="header">
+  <div class="hrow">
+    <div>
+      <h1>📋 FICHA DE OBSERVACIONES N°01 — INSTALACIONES SANITARIAS</h1>
+      <div class="sub">I.E. PÚBLICA MILITAR "INCA MANCO CAPAC" · TOTORANI · PUNO &nbsp;|&nbsp; Rev. 01: 15.10.25 &nbsp;|&nbsp; Evaluador: GIULIANA CATHERINE ORTEGA VILA</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <div class="badge"><span class="dot" id="dot"></span><span id="badge-txt">Conectando…</span></div>
+      <span id="rol-badge" class="rol-badge-proy"></span>
+      <button id="btn-enviar" class="btn-enviar" onclick="window.enviarRonda()" style="display:none">📤 Enviar para Evaluación</button>
+      <button id="btn-dark" onclick="window.toggleDark()" title="Modo oscuro/claro" style="background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:white;border-radius:20px;padding:4px 12px;font-size:13px;cursor:pointer">🌙</button>
+      <div id="user-badge" onclick="window.cambiarUsuario()" title="Cambiar usuario">👤 <span id="user-name">—</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="controles">
+  <div><label>SECCIÓN</label><br>
+    <select id="fs" onchange="filtrar()">
+      <option value="">Todas</option>
+      <option value="PLANOS">Planos</option>
+      <option value="MEMORIA DE CÁLCULO">Memoria de Cálculo</option>
+      <option value="MEMORIA DESCRIPTIVA">Memoria Descriptiva</option>
+      <option value="ESPECIFICACIONES TÉCNICAS">Especificaciones Técnicas</option>
+    </select>
+  </div>
+  <div><label>USUARIO</label><br>
+    <select id="fu" onchange="filtrar()">
+      <option value="">Todos</option>
+    </select>
+  </div>
+  <div><label>FECHA</label><br>
+    <select id="ff" onchange="filtrar()">
+      <option value="">Todas</option>
+      <option value="hoy">Hoy</option>
+      <option value="semana">Esta semana</option>
+      <option value="mes">Este mes</option>
+    </select>
+  </div>
+  <div><label>BUSCAR</label><br>
+    <input type="text" id="ft" placeholder="Texto de observación..." oninput="filtrar()" style="width:180px">
+  </div>
+  <button class="btn-clr" onclick="window.limFil()">✕ Limpiar</button>
+  <div class="filtros-rapidos">
+    <button class="fq todos act" id="fq-todos" onclick="window.filtroRapido('todos')">Todos</button>
+    <button class="fq sub" id="fq-sub" onclick="window.filtroRapido('sub')">✅ Subsanados</button>
+    <button class="fq pend" id="fq-pend" onclick="window.filtroRapido('pend')">⛔ Pendientes</button>
+  </div>
+  <a href="https://drive.google.com/drive/u/0/folders/1wMWwoLDkU9mkisn-MQzoauL0QgBMUpfI" target="_blank" class="btn-drive">📁 Ver Drive de Archivos</a>
+  <button class="btn-export" onclick="exportarPDF()">📄 Exportar PDF</button>
+  <button class="btn-export" style="background:#1a4f8a" onclick="exportarExcel()">📥 Exportar Excel</button>
+  <div class="stats-bar">
+    <div class="stat t"><div class="n" id="ct">202</div><div class="l">TOTAL</div></div>
+    <div class="stat s"><div class="n" id="cs">0</div><div class="l">SUBSANADOS</div></div>
+    <div class="stat p"><div class="n" id="cp">202</div><div class="l">PENDIENTES</div></div>
+    <div class="stat" style="text-align:center"><div class="n" id="ce" style="color:#7c3aed">0</div><div class="l" style="color:#6b7280">EVALUADOS</div></div>
+  </div>
+</div>
+
+<div id="notif"></div>
+<div id="img-modal"><span id="img-modal-close" onclick="document.getElementById('img-modal').classList.remove('open')">✕</span><img id="img-modal-src" src=""></div>
+<div class="contenido" id="cont"></div>
+<button id="stb" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- Firebase CDN compat (funciona en cualquier servidor) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyCMzbdfzOrZtUR3Mlbn0MY-wBepKBYTzF8",
+  authDomain: "manco-capac.firebaseapp.com",
+  databaseURL: "https://manco-capac-default-rtdb.firebaseio.com",
+  projectId: "manco-capac",
+  storageBucket: "manco-capac.firebasestorage.app",
+  messagingSenderId: "667760154206",
+  appId: "1:667760154206:web:664bb1cd74c3efe7a4c6cf"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const dbRef = db.ref('observaciones');
+
+const DATA=[{"id":"obs_17","num":"1","section":"PLANOS","subsection":"GENERAL","obs":"Faltan planos, como planos de detalles y planos de unidades de almacenamiento de agua."},{"id":"obs_18","num":"2","section":"PLANOS","subsection":"GENERAL","obs":"Presentar listado de planos"},{"id":"obs_19","num":"3","section":"PLANOS","subsection":"GENERAL","obs":"Corregir la escala de los planos generales, guiarse de tamaño de textos de leyenda ya que la información de plano: lineas y texto debe ser visible."},{"id":"obs_21","num":"1","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Incluir en leyenda el codo que sube."},{"id":"obs_22","num":"2","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Precisar si estas van colgadas en el techo del nivel al que alimentan o en la losa del piso al que alimentan."},{"id":"obs_23","num":"3","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir escala de textos y escala de lineas, no guarda coherencia con leyenda."},{"id":"obs_24","num":"4","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Evitar presentar desarrollo de interiores en planos generales, considerar solo las derivaciones de alimentación hasta el ingreso del ambiente."},{"id":"obs_25","num":"5","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Punto de alimentación interfiere con columneta de amarre en la vertical, proponer reubicación de aparato sanitario"},{"id":"obs_26","num":"6","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_27","num":"7","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir etiquetado, señala la llave perilla de ducha pero indica mezcladora."},{"id":"obs_28","num":"8","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"En el detalle presentado vista frontal no se observa la mezcladora pero en perfil si indica, compatibilizar y corregir."},{"id":"obs_29","num":"9","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Se esta presentando información recortada, corregir"},{"id":"obs_30","num":"10","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Tal como lo señala la especificación técnica se debe indicar el codo ppr con interior metálico"},{"id":"obs_31","num":"11","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Acotar espaciamiento entre puntos de alimentación de agua para lavatorio."},{"id":"obs_32","num":"12","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir los codos que suben, las líneas no deben llegar hasta el centro del círculo, ver leyenda."},{"id":"obs_33","num":"13","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_34","num":"14","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_35","num":"15","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Según especificación técnica y juego de codos en válvulas se puede entender que la red que llega es colgada, sin embargo no se observan los colgadores, agregar."},{"id":"obs_36","num":"16","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Verificar y corregir espaciamiento de tuberia, a 30.5cm se ubica el punto de desague, se generará interferencia, corregir."},{"id":"obs_37","num":"17","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Complementar detalle, indica detalle de puntos de salida de agua, sin embargo no se observa ninguno de estos."},{"id":"obs_38","num":"18","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir orientacion de texto para una correcta lectura de la información."},{"id":"obs_39","num":"19","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Completar accesorio."},{"id":"obs_40","num":"20","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_41","num":"21","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_42","num":"22","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_43","num":"23","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta etquetar para los puntos de alimentadores indicados"},{"id":"obs_44","num":"24","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta etquetar para los puntos de alimentadores indicados"},{"id":"obs_45","num":"25","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_46","num":"26","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta etquetar para los puntos de alimentadores indicados"},{"id":"obs_47","num":"27","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Validar punto de alimentación de agua dura, confirmar requerimiento de equipo con el especialista de equipamiento."},{"id":"obs_48","num":"28","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Cambiar orientación de la válvula, esta debe poder operarse desde un punto de acceso publico, no dentro del cubículo de una ducha personal."},{"id":"obs_49","num":"29","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Cambiar orientación de la válvula, esta debe poder operarse desde un punto de acceso publico, no dentro del cubículo de una ducha personal."},{"id":"obs_50","num":"30","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta incluir detalle para cuarto de limpieza, ¿se considerará válvula debajo de llave? ¿A que altura, con nicho? Complementar detalles"},{"id":"obs_52","num":"32","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Los accesorios se ven cortados, corregir ventana de layout, se debe poder ver toda la información correctamente."},{"id":"obs_53","num":"33","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Cambiar orientación de la válvula, esta debe poder operarse desde un punto de acceso publico, no dentro del cubículo de una ducha personal."},{"id":"obs_54","num":"34","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Puntos de alimentación de agua para ducha no compatibles con ubicación de arquitectura, corregir."},{"id":"obs_55","num":"35","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_56","num":"36","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Cambiar orientación de la válvula, esta debe poder operarse desde un punto de acceso publico, no dentro del cubículo de una ducha personal."},{"id":"obs_57","num":"37","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_58","num":"38","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir vista de accesorios, se debe representar según la leyenda establecida"},{"id":"obs_59","num":"39","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Cambiar orientación de la válvula, esta debe poder operarse desde un punto de acceso publico, no dentro del cubículo de una ducha personal."},{"id":"obs_60","num":"40","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Adecuar correctamente las ventanas, estas deben mostrar solo los bloques indicados, evitando mostrar información recortada de otros bloques"},{"id":"obs_61","num":"41","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir escala de textos y lineas para presentación de los planos de componente 2."},{"id":"obs_62","num":"42","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir escala de textos y lineas para presentación de los planos de componentes 2."},{"id":"obs_63","num":"43","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Corregir escala de textos, además generar mas láminas de ser necesario."},{"id":"obs_64","num":"44","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta considerar cuadro de items para identificación de cada componente y accesorio."},{"id":"obs_65","num":"45","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Se debe acotar los espaciamientos de cada tubería normativa tanto como llenado, rebose según lo indicado en la norma."},{"id":"obs_66","num":"46","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Acotar espacimiento de brecha de aire."},{"id":"obs_67","num":"47","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Los niveles presentados no guardan coherencia ni son correctos respecto al proyecto, corregir."},{"id":"obs_68","num":"48","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"El nivel máximo de agua, ¿coincide con la tubería de llenado? Corregir."},{"id":"obs_69","num":"49","section":"PLANOS","subsection":"SISTEMA DE AGUA POTABLE","obs":"Falta indicar pendiente en corte, en planta si se indica la pendiente de fondo"},{"id":"obs_71","num":"1","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Lámina se encuentra sin desarrollo, corregir"},{"id":"obs_72","num":"2","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Ninguna de las láminas cuenta con desarrollo corregir."},{"id":"obs_73","num":"3","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Ya no aplican las normas ITINTEC, retirarlas."},{"id":"obs_74","num":"4","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir escalas por lo menos los textos y las lineas deben verse adecuadamente para la escala seleccionada."},{"id":"obs_75","num":"5","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Retirar esta información de las leyendas."},{"id":"obs_76","num":"6","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_77","num":"7","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_78","num":"8","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir acotamiento se debe indicar desde el npt del techo los 30 centimetros"},{"id":"obs_79","num":"9","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Las mismas especificaciones se contradicen, corregir."},{"id":"obs_80","num":"10","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir el accesorio tee, la linea de la tuberia no deberia llegar hasta el centro del circulo."},{"id":"obs_81","num":"11","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Alinear sumidero con punto indicado por arquitectura."},{"id":"obs_82","num":"12","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_83","num":"13","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_84","num":"14","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_85","num":"15","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Los textos se encuentran desfasados de las tuberias, evitar que el texto se coloque por encima de las lineas de tuberias."},{"id":"obs_86","num":"16","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir leyenda, se encuentra vacío el recuadro"},{"id":"obs_87","num":"17","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Las tuberías se están cruzando, corregir detalle"},{"id":"obs_88","num":"18","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar la adición de quiebres innecesarios"},{"id":"obs_89","num":"19","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar la adición de quiebres innecesarios"},{"id":"obs_90","num":"20","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar la adición de quiebres innecesarios"},{"id":"obs_91","num":"21","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Corregir detalle no se visualiza la tee, mas por el contrario se ve accesorio tipo leyenda, estos no corresponden a vista de detalles."},{"id":"obs_92","num":"22","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar la adición de quiebres innecesarios"},{"id":"obs_93","num":"23","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Emplear accesorio yee en lugar de tee sanitaria, la tee sanitaria reservarla para el caso de salidas de desague o caidas verticales."},{"id":"obs_94","num":"24","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar recorte de información, si esta no es necesaria para la lámina quitarla de toda la ventana mas no solo como recorte."},{"id":"obs_95","num":"25","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Orientar correctamente los textos."},{"id":"obs_96","num":"26","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar recorte de información, si esta no es necesaria para la lámina quitarla de toda la ventana mas no solo como recorte."},{"id":"obs_97","num":"27","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Evitar recorte de información, si esta no es necesaria para la lámina quitarla de toda la ventana mas no solo como recorte."},{"id":"obs_98","num":"28","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Los codos 4a 2 para inodoros permiten una ventilación siguiendo la linea del desague, se debe proyectar ello y posterior el quiebre."},{"id":"obs_99","num":"29","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Los codos 4a 2 para inodoros permiten una ventilación siguiendo la linea del desague, se debe proyectar ello y posterior el quiebre."},{"id":"obs_100","num":"30","section":"PLANOS","subsection":"SISTEMA DE DESAGUE Y VENTILACIÓN","obs":"Los codos 4a 2 para inodoros permiten una ventilación siguiendo la linea del desague, se debe proyectar ello y posterior el quiebre."},{"id":"obs_102","num":"1","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Ya no aplican las normas ITINTEC, retirarlas."},{"id":"obs_103","num":"2","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Según la normativa vigente CE.040 la pendiente minima es de 1%, modificar"},{"id":"obs_104","num":"3","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Uniformizar escala de textos, las etiquetas para las cotas se ven inferiores a la altura de textos en canaletas."},{"id":"obs_105","num":"4","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Por tramos de tuberías se deben indicar la pendiente y la longitud"},{"id":"obs_106","num":"5","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Indicar las cotas de llegada para tuberías que descargan en canaletas."},{"id":"obs_107","num":"6","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Estas cajas se ubican en interiores, sin embargo no se proyectan como cajas de registro ciegas, corregir"},{"id":"obs_108","num":"7","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"¿Lo que se esta proyectando a pie de montante son registros roscados? Precisar y etiquetar"},{"id":"obs_109","num":"8","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Elaborar corte de canalizado indicado, mostrándose que con esas alturas tan pequeñas no se tendrá interferencias con los demás elementos que crean el desnivel."},{"id":"obs_110","num":"9","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Corregir la orientación de las cajas, estas deben estar orientadas hacia el flujo contigua a la descarga."},{"id":"obs_111","num":"10","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Cajas de registro incompletas, falta precisar etiqueta de dimensiones cotas y altura."},{"id":"obs_112","num":"11","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Modificar propuesta para evitar tener tubería que pasa a traves y por debajo de la edificación (bloques)."},{"id":"obs_113","num":"12","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Tramo de canalizado pluvial que no descarga en ningún lado, corregir."},{"id":"obs_114","num":"13","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Falta indicar etiqueta que precise pendiente longitud y caracteristicas de la canaleta con rejilla."},{"id":"obs_115","num":"14","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"¿A que se refiere con canal rudimentario? Presentar con los detalles necesarios."},{"id":"obs_116","num":"15","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Falta etiqueta de caja de registro, asimismo modificar su ubicación debido a que esta se encuentra por encima de sardinel"},{"id":"obs_117","num":"16","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Falta agregar etiquetas tanto para caja de registro como para el tramo de tubería."},{"id":"obs_118","num":"17","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"¿A donde descargan estas cajas de registro? Falta finalizar canalizado, asimismo cajas estan sin etiquetas, corregir"},{"id":"obs_119","num":"18","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Anteriormente se agregaron registros roscados para el quiebre de la montante, uniformizar y aplicar al resto de montantes que mantengan quiebres para su descarga final"},{"id":"obs_120","num":"19","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Falta indicar las cotas de la canaleta, asimismo se debe indicar el arranque de esta."},{"id":"obs_121","num":"20","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Falta etiquetas para las canaletas con rejilla mostradas asimismo tambien para las canaletas con tapa de concreto."},{"id":"obs_122","num":"21","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"No se especifica en eett de plano si estas losas de concreto serán removibles o no."},{"id":"obs_123","num":"22","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Zona sin desarrollo de drenaje pluvial, terminar el diseño"},{"id":"obs_124","num":"23","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Zona sin desarrollo de drenaje pluvial, terminar el diseño"},{"id":"obs_125","num":"24","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Para techos de concreto se debe indicar una canaleta media caña que se arma en el acabado de este."},{"id":"obs_126","num":"25","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Para techos de concreto se debe indicar una canaleta media caña que se arma en el acabado de este."},{"id":"obs_127","num":"26","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Complementar etiqueta, esta debe indicar tambien el ancho del elemento y su longitud del tramo establecido."},{"id":"obs_128","num":"27","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Complementar etiqueta, esta debe indicar tambien el ancho del elemento y su longitud del tramo establecido."},{"id":"obs_129","num":"28","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Para techos de concreto se debe indicar una canaleta media caña que se arma en el acabado de este."},{"id":"obs_130","num":"29","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Los planos que se indican como detalles para drenaje pluvial, presentan el mismo desarrollo de las plantas generales."},{"id":"obs_131","num":"30","section":"PLANOS","subsection":"SISTEMA DE DRENAJE PLUVIAL","obs":"Complementar desarrollo del sistema: nivel planta incompleta, a nivel de detalles faltan varios. Armar detalles de cada componente: canaletas (plancha galvanizada rectangular, aluzinc circular, concreto en techo), bajantes, falsas columnas, cortes del canalizado. Presentar detalle de canaleta atrapa hojas y canaleta con tapa de concreto."},{"id":"obs_133","num":"1","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"No se verifican áreas indicadas en memoria en las coberturas/techos, se debe compatibilizar y sectorizar según precisa la memoria de calculo."},{"id":"obs_134","num":"2","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"No se verifican áreas indicadas en memoria en las coberturas/techos. Aplica para la totalidad de descargas"},{"id":"obs_135","num":"3","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"No es posible verificar información debido a que en planos el diseño se encuentra incompleto, asimismo la codificación según mc no está."},{"id":"obs_136","num":"4","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Ambos calculos de manning para canaletas rectangulares son con coeficiente de concreto, sin embargo tambien según plano se tiene canaleta de galvanizado sección rectangular, falta el calculo."},{"id":"obs_137","num":"5","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Cada una de estas codificaciones deben poder verificarse en planos, compatibilizar."},{"id":"obs_138","num":"6","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Verificar diametro de tuberia con planos, compatibilizar."},{"id":"obs_139","num":"7","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Faltan calculos para canaletas de sección rectangular de material galvanizado según lo indica el plano"},{"id":"obs_140","num":"8","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Se ha cargado doble archivo de mc, se debe confirmar cual es el definitivo."},{"id":"obs_141","num":"9","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Modificar esquema y tomar como referencia para los espaciamientos el eje de tubería. El plano no cuenta con acotamientos y se encuentra carente de información. Compatibilizar los niveles, ya que plano indica valores diferentes."},{"id":"obs_142","num":"10","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"La ducha de emergencia no es un aparato de uso diario, por tal razón se exime de la dotación puesto que esta es el promedio de consumo por dia."},{"id":"obs_143","num":"11","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Modificar esquema y tomar como referencia para los espaciamientos el eje de tubería. El plano no cuenta con acotamientos. Compatibilizar los niveles, ya que plano indica valores diferentes."},{"id":"obs_144","num":"12","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_145","num":"13","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_146","num":"14","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_147","num":"15","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_148","num":"16","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Presentar y justificar técnicamente el empleo de bombas con un caudal tan elevado, evaluar la inclusión de por lo menos una bomba adicional para que estas trabajen a q/2"},{"id":"obs_149","num":"17","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Cada tramo mostrado en las rutas de cálculo hidráulico se deben corroborar a traves de un isométrico con información mínima de diametros, longitudes, unidades hunter y totalidad de accesorios empleados."},{"id":"obs_150","num":"18","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Se establecen varios calculos hidráulicos para tanques elevados, sin embargo en el diseño de la mc solo se esta considerando 1. Compatibilizar y modificar, presentar el diseño de todos los tanques elevados proyectados."},{"id":"obs_151","num":"19","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"La totalidad de cálculos hidráulicos deben ser corregidos puesto que estos deben considerar el diametro interno de la tuberia seleccionada."},{"id":"obs_152","num":"20","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Falta la red de succión."},{"id":"obs_153","num":"21","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida."},{"id":"obs_154","num":"22","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Presentar ficha técnica de la bomba seleccionada para la determinación de la potencia."},{"id":"obs_155","num":"23","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"El calculo hidráulico de la red de impulsion para la ducha de emergencia debe venir con un isometrico para verificar tramo a tramo la totalidad de accesorios, unidades hunter, longitudes y diametros."},{"id":"obs_156","num":"24","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_157","num":"25","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los calculos presentados no van de acorde a lo seleccionado en planos, se recomienda evaluar con fichas técnicas de proveedores reconocidos para contabilizar la totalidad de puntos a alimentar."},{"id":"obs_158","num":"26","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Los cálculos deben ser realizados con el diametro interno de la tubería tomando como referencia fichas técnicas de marca reconocida del material y clase seleccionada para el proyecto."},{"id":"obs_159","num":"27","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Si la distribución de agua caliente es sectorizada, ¿por que se determina la totalidad del caudal? Compatibilizar propuesta con calculo"},{"id":"obs_160","num":"28","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Compatibilizar información con planos, la codificación debe ser coherente a lo establecido en planos; hay varias cajas carentes de etiquetas."},{"id":"obs_161","num":"29","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Hacer referencia y detallar el limite de diametro permitido para la totalidad de unidades de descarga y que opción se esta optando: ¿3 conexiones? ¿2 conexiones? ¿1 conexión?"},{"id":"obs_162","num":"30","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"No existe anexo 12 en el RNE IS.010. Verificar que las unidades ventiladas tienen un limite de diametro para su totalidad; establecer en 2 columnas el recorrido minimo y el recorrido según planteamiento en plano"},{"id":"obs_163","num":"31","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Las observaciones del componente 1 se deben aplicar tambien a la mc del componente 2. Hay pestañas exactamente iguales para ambos componentes. La carpeta para el componente 2 no presenta calculo de agua fria. El componente 2 presenta una mc para el agua caliente incompleta"},{"id":"obs_164","num":"32","section":"MEMORIA DE CÁLCULO","subsection":"","obs":"Presentar editable de mc de trampa de grasa para verificar el criterio de selección y el procedimiento del calculo."},{"id":"obs_166","num":"1","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Las memorias presentadas para ambos componentes es el mismo archivo, terminar de desarrollar y compatibilizar según los elementos que compongan a cada componente."},{"id":"obs_167","num":"2","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"La presión no va de acorde a lo indicado en la mc, compatibilizar."},{"id":"obs_168","num":"3","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Adjuntar el certificado de factibilidad de servicios, para verificar continuidad y presión de servicios."},{"id":"obs_169","num":"4","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"La memoria es muy general, no establece la totalidad de unidades hunter. Debe ser descriptiva, mencionando y guardando coherencia con lo calculado en la mc."},{"id":"obs_170","num":"5","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"No es presión constante y velocidad variable, se tiene tanque elevado, corregir."},{"id":"obs_171","num":"6","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"No se detalla la totalidad de componentes, la mc establece varios tanques elevados sin embargo aquí no se menciona ni describe ninguno, corregir."},{"id":"obs_172","num":"7","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"La descripción del sistema no es coherente con la mc."},{"id":"obs_173","num":"8","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Se habla de un sistema de riego que en planos no cuenta con proyección ni tampoco calculo establecido, corregir."},{"id":"obs_174","num":"9","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Menciona un procedimiento de calculo pero no menciona el valor final, corregir."},{"id":"obs_175","num":"10","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Describir y justificar como para 50 unidades ventiladas se tiene una tuberia solo de 2\"."},{"id":"obs_176","num":"11","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"La descripción del sistema pluvial es pobre e incompleta, corregir. Se debe describir cada componente: montante, canaletas, detalles constructivos, etc."},{"id":"obs_177","num":"12","section":"MEMORIA DESCRIPTIVA","subsection":"","obs":"Redacción general, no es descriptiva ni justificativa. No habla de la materialidad, las dimensiones de los muros, los acabados, los elementos que la componen, caracteristicas, etc."},{"id":"obs_179","num":"1","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Falta precisar la mezcladora en los materiales"},{"id":"obs_180","num":"2","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Considerar la inclusión de papelera de losa vitrificada, para baños con poco uso"},{"id":"obs_181","num":"3","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Según planos se empleara codos ppr con inserto metálico, mas no acero inoxidable, compatibilizar."},{"id":"obs_182","num":"4","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente, asimismo considerar distancia promedio para el presupuesto."},{"id":"obs_183","num":"5","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Diferenciar partida indicando el metodo de union C/R SP"},{"id":"obs_184","num":"6","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Las tuberías SP se unen con pegamento, falta considerar en materiales."},{"id":"obs_185","num":"7","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Retirar todo lo concerniente a SAP, este tipo de tuberias no corresponde a sistemas sanitarios."},{"id":"obs_186","num":"8","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Se debe precisar por lo menos la presión y la duración para la prueba hidráulica."},{"id":"obs_187","num":"9","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Asi como se precisa elementos a presión SP, se debe precisar cuando estos serán a rosca C/R, añadir."},{"id":"obs_188","num":"10","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Compatibilizar materialidad con lo presentado en los detalles, este indica bronce, sin embargo descripción indica otro material."},{"id":"obs_189","num":"11","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar que el marco y la tapa ambos son de acero inoxidable"},{"id":"obs_190","num":"12","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"No se ha presentado el detalle correspondiente para verificar la compatibilidad entre lo propuesto y las especificaciones tecnicas, complementar."},{"id":"obs_191","num":"13","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Detalle y planos indican cpvc, mas no ppr, compatibilizar según detalles presentados."},{"id":"obs_192","num":"14","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"No se indica ppr, indican cpvc para agua caliente los planos y detalles, compatibilizar."},{"id":"obs_193","num":"15","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar la presión a la que se correrá la prueba hidráulica, asimismo corregir el tiempo, este debe ser de 60 minutos"},{"id":"obs_194","num":"16","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"No aplica PPR, se deben compatibilizar con lo proyectado en planos, es CPVC."},{"id":"obs_195","num":"17","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Corregir: no son válvulas compuerta sino esféricas, corregir descripción y materiales, no aplica PPR."},{"id":"obs_196","num":"18","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Solo se observa calentadores de 50 litros, falta de las demás capacidades, según lo presentado son de 50 y 110."},{"id":"obs_197","num":"19","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"La partida del tanque elevado se encuentra bastante general. Mejorar desarrollo: debe detallar cada componente del sistema, ser coherente con una leyenda de listado de items en planos de detalles. Faltan planos, no se puede verificar."},{"id":"obs_198","num":"20","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Retirar todo lo concerniente a SAP, este tipo de tuberias no corresponde a sistemas sanitarios."},{"id":"obs_199","num":"21","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar la presión a la que se correrá la prueba hidráulica, asimismo indicar el tiempo, este debe ser de 60 minutos"},{"id":"obs_200","num":"22","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Retirar todo lo concerniente a SAP, este tipo de tuberias no corresponde a sistemas sanitarios."},{"id":"obs_201","num":"23","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"La partida de cisterna se encuentra bastante general. Mejorar desarrollo: debe detallar cada componente del sistema, ser coherente con una leyenda de listado de items en planos de detalles. Faltan planos, no se puede verificar."},{"id":"obs_202","num":"24","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente, asimismo considerar distancia promedio para el presupuesto."},{"id":"obs_203","num":"25","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar el tipo de acero inoxidable, se recomienda 304."},{"id":"obs_204","num":"26","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Compatibilizar partida con diseño de planos: en planos se observan valvulas de 1 1/2 y 3, no de 2 pulgadas."},{"id":"obs_205","num":"27","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Son bombas centrífugas sin embargo en md indica presión constante y velocidad variable. Asimismo partida debe indicar caudal y también altura dinámica total para la cotización y presupuesto."},{"id":"obs_206","num":"28","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Corregir numeración de partida."},{"id":"obs_207","num":"29","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Si se establece como partida los colgadores/abrazaderas y algun otro material de anclaje, este debe verse reflejado en los planos como item de leyenda y como cantidad para permitir el correcto metrado."},{"id":"obs_208","num":"30","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Compatibilizar información: no existe detalle ni en mc ni en md sobre la selección y calculo del tanque hidroneumático."},{"id":"obs_209","num":"31","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"En general sobre las partidas de cisterna y tanque elevado: se estan mezclando componentes entre si. No se puede verificar sin un cuadro de items en planos para compatibilidad de materiales. Mejorar desarrollo, debe ser 100% compatible con propuesta en planos."},{"id":"obs_210","num":"32","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Falta incluir salidas de desague para puntos de 2\", los demas según se indican son precisamente para registros y sumideros."},{"id":"obs_211","num":"33","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Según la mc las tuberias de ventilación solo se consideran de 2\" sin embargo existe partida para montante de ventilación de 4\"; se debe compatibilizar y corregir."},{"id":"obs_212","num":"34","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente."},{"id":"obs_213","num":"35","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"No es PVC-P es PVCP-CP, corregir."},{"id":"obs_214","num":"36","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Se indica PVC-U, sin embargo en planteamiento de planos no se detalla tampoco en las especificaciones tecnicas de plano, compatibilizar propuesta."},{"id":"obs_215","num":"37","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Según MC no existen montantes de 4 pulgadas de ventilación, ¿donde se ubicarian estos sombreros?"},{"id":"obs_216","num":"38","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar en la lista de materiales de la partida, los componentes e insumos necesarios para su ejecución total: pernos, varilla, etc."},{"id":"obs_217","num":"39","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Precisar en la lista de materiales de la partida, los componentes e insumos necesarios para su ejecución total: pernos, varilla, etc."},{"id":"obs_218","num":"40","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente."},{"id":"obs_219","num":"41","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente."},{"id":"obs_220","num":"42","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"¿Se empleará tuberias PVC-UF? Propuesta en eett no conversa con lo indicado en planos, compatibilizar."},{"id":"obs_221","num":"43","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Generar partida diferenciada entre el acarreo y la eliminación del material excedente."},{"id":"obs_222","num":"44","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Confirmar el empleo de elementos de concreto en los metrados de sanitarias, podrían tener inconvenientes con los indices unificados. Confirmar con el especialista de presupuesto si tendrá inconvenientes con la formula polinómica."},{"id":"obs_223","num":"45","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Partida incompatible con lo presentado en planos, debe ser coherente con los detalles y especificaciones tecnicas de planos."},{"id":"obs_224","num":"46","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"Solo se observa la canaleta rectangular metálica, mas no la semicircular, compatibilizar y mejorar desarrollo."},{"id":"obs_225","num":"47","section":"ESPECIFICACIONES TÉCNICAS","subsection":"","obs":"En general las partidas requieren mejor desarrollo. Cada componente a metrar según planos debe ser detallado y diferenciado como tal, asimismo todo debe ser compatible al 100%. Complementar desarrollo de expediente"}];
+
+// ─── USUARIO ACTIVO ───
+let currentUser = '';
+let currentRol  = ''; // 'proyectista' o 'evaluador'
+
+window.selRol = function(rol) {
+  currentRol = rol;
+  document.getElementById('rol-proy').className = 'rol-opt' + (rol==='proyectista' ? ' act-proy' : '');
+  document.getElementById('rol-eval').className = 'rol-opt' + (rol==='evaluador'   ? ' act-eval' : '');
+  document.getElementById('login-error').style.display = 'none';
+};
+
+window.doLogin = function() {
+  const v = document.getElementById('login-input').value.trim();
+  if (!v) { document.getElementById('login-input').focus(); return; }
+  if (!currentRol) { document.getElementById('login-error').style.display = 'block'; return; }
+  currentUser = v;
+  document.getElementById('user-name').textContent = v;
+  const rolBadge = document.getElementById('rol-badge');
+  if (rolBadge) {
+    rolBadge.textContent = currentRol === 'evaluador' ? '🔍 Evaluador' : '✏️ Proyectista';
+    rolBadge.className = currentRol === 'evaluador' ? 'rol-badge-eval' : 'rol-badge-proy';
+  }
+  document.getElementById('login-modal').style.display = 'none';
+  sessionStorage.setItem('imc_user', v);
+  sessionStorage.setItem('imc_rol', currentRol);
+  mostrarBtnEnviar();
+  aplicarRol();
+};
+
+function mostrarBtnEnviar() {
+  const btn = document.getElementById('btn-enviar');
+  if (!btn) return;
+  // Leer estado de ronda desde Firebase
+  const rondaActual = (window._metaRonda) || 1;
+  if (currentRol === 'proyectista') {
+    btn.style.display = 'inline-flex';
+    btn.className = 'btn-enviar';
+    btn.innerHTML = `📤 Enviar para Evaluación (Ronda ${rondaActual})`;
+  } else if (currentRol === 'evaluador') {
+    btn.style.display = 'inline-flex';
+    btn.className = 'btn-enviar eval-mode';
+    btn.innerHTML = `🔍 Enviar para su Revisión (Ronda ${rondaActual})`;
+  }
+}
+
+// ─── SISTEMA DE RONDAS / REVISIONES ───
+window._metaRonda = 1; // ronda actual global
+
+window.enviarRonda = async function() {
+  const ronda = window._metaRonda || 1;
+  if (currentRol === 'proyectista') {
+    const ok = await pedirConfirm(
+      `Enviar Ronda ${ronda} para Evaluación`,
+      `¿Confirmas que todas las observaciones que pudiste levantar están marcadas? Se notificará al evaluador que puede revisar la Ronda ${ronda}.`
+    );
+    if (!ok) return;
+    const ahora = new Date();
+    const fh = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+    const meta = { ronda, estado: 'enviado_a_evaluador', quien: currentUser, fecha: fh };
+    db.ref('meta_ronda').update(meta);
+    notif(`Ronda ${ronda} enviada para evaluacion`, '#166534');
+  } else if (currentRol === 'evaluador') {
+    const ok = await pedirConfirm(
+      `Enviar Ronda ${ronda} para Revision`,
+      `Confirmas que revisaste todas las observaciones? Las observaciones con "SE REITERA" iniciaran una Ronda ${ronda+1} para el proyectista.`
+    );
+    if (!ok) return;
+    const ahora = new Date();
+    const fh = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+    const nuevaRonda = ronda + 1;
+    DATA.forEach(o => {
+      const s = E[o.id] || {};
+      if (s.eval_v === 'reitera') {
+        if (!E[o.id]) E[o.id] = {};
+        const hist = E[o.id].historial || [];
+        hist.push({
+          ronda,
+          ok: s.ok || false,
+          resp: s.resp || '',
+          fecha: s.fecha || '',
+          coment: s.coment || '',
+          eval_v: 'reitera',
+          eval_coment: s.eval_coment || '',
+          eval_nombre: s.eval_nombre || '',
+          eval_fecha: s.eval_fecha || ''
+        });
+        E[o.id].historial = hist;
+        const patch = {};
+        patch[o.id + '/historial'] = hist;
+        patch[o.id + '/ok'] = false;
+        patch[o.id + '/eval_v'] = '';
+        patch[o.id + '/eval_coment'] = '';
+        patch[o.id + '/eval_nombre'] = '';
+        patch[o.id + '/eval_fecha'] = '';
+        patch[o.id + '/resp'] = '';
+        patch[o.id + '/fecha'] = '';
+        patch[o.id + '/coment'] = '';
+        patch[o.id + '/imgs'] = [];
+        patch[o.id + '/eval_imgs'] = [];
+        dbRef.update(patch);
+      }
+    });
+    const meta = { ronda: nuevaRonda, estado: 'enviado_a_proyectista', quien: currentUser, fecha: fh };
+    db.ref('meta_ronda').update(meta);
+    window._metaRonda = nuevaRonda;
+    mostrarBtnEnviar();
+    notif(`Ronda ${nuevaRonda} iniciada para el proyectista`, '#7c3aed');
+  }
+};
+
+window.cambiarUsuario = function() {
+  currentRol = '';
+  document.getElementById('rol-proy').className = 'rol-opt';
+  document.getElementById('rol-eval').className = 'rol-opt';
+  document.getElementById('login-input').value = '';
+  document.getElementById('login-modal').style.display = 'flex';
+  setTimeout(() => document.getElementById('login-input').focus(), 100);
+};
+
+function aplicarRol() {
+  if (currentRol === 'proyectista') {
+    // Bloquear TODA la columna evaluador
+    document.querySelectorAll('.btn-eval').forEach(b => {
+      b.disabled = true;
+      b.title = 'Solo el evaluador puede marcar esto';
+      b.style.opacity = '.35';
+      b.style.cursor = 'not-allowed';
+      b.style.pointerEvents = 'none';
+    });
+    document.querySelectorAll('.eval-cell textarea').forEach(t => {
+      t.readOnly = true;
+      t.style.opacity = '.4';
+      t.style.cursor = 'not-allowed';
+      t.style.background = '#f9fafb';
+    });
+    document.querySelectorAll('.eval-cell .com-img-del').forEach(b => {
+      b.style.display = 'none';
+    });
+  }
+  if (currentRol === 'evaluador') {
+    // Bloquear switch de subsanado
+    document.querySelectorAll('.sw input[type=checkbox]').forEach(c => {
+      c.disabled = true;
+      c.title = 'Solo el proyectista puede marcar subsanado';
+      c.closest('.sw').style.opacity = '.4';
+      c.closest('.sw').style.cursor = 'not-allowed';
+      c.closest('.sw').style.pointerEvents = 'none';
+    });
+    // Bloquear campos responsable y fecha levantamiento
+    document.querySelectorAll('.inp-r, .inp-f').forEach(i => {
+      i.readOnly = true;
+      i.style.opacity = '.5';
+      i.style.cursor = 'not-allowed';
+    });
+    // Bloquear comentario proyectista
+    document.querySelectorAll('.c-com textarea').forEach(t => {
+      t.readOnly = true;
+      t.style.opacity = '.4';
+      t.style.cursor = 'not-allowed';
+      t.style.background = '#f9fafb';
+    });
+    document.querySelectorAll('.c-com .com-img-del').forEach(b => {
+      b.style.display = 'none';
+    });
+  }
+}
+
+// Recuperar sesión si ya estaba logueado en esta pestaña
+(function() {
+  const saved    = sessionStorage.getItem('imc_user');
+  const savedRol = sessionStorage.getItem('imc_rol');
+  if (saved && savedRol) {
+    currentUser = saved;
+    currentRol  = savedRol;
+    document.getElementById('user-name').textContent = saved;
+    const rolBadge = document.getElementById('rol-badge');
+    if (rolBadge) {
+      rolBadge.textContent = savedRol === 'evaluador' ? '🔍 Evaluador' : '✏️ Proyectista';
+      rolBadge.className = savedRol === 'evaluador' ? 'rol-badge-eval' : 'rol-badge-proy';
+    }
+    document.getElementById('login-modal').style.display = 'none';
+  }
+})();
+
+// Leer meta de ronda desde Firebase
+const metaRondaRef = db.ref('meta_ronda');
+metaRondaRef.on('value', (snap) => {
+  const meta = snap.val();
+  if (meta && meta.ronda) {
+    window._metaRonda = meta.ronda;
+    if (currentRol) mostrarBtnEnviar();
+  }
+});
+
+// ─── MODAL CONFIRMACION ───
+let _confirmCb = null;
+function pedirConfirm(title, msg) {
+  return new Promise(res => {
+    _confirmCb = res;
+    document.getElementById('confirm-title').textContent = title;
+    document.getElementById('confirm-msg').textContent = msg;
+    document.getElementById('confirm-modal').classList.add('open');
+  });
+}
+window.confirmResp = function(v) {
+  document.getElementById('confirm-modal').classList.remove('open');
+  if (_confirmCb) { _confirmCb(v); _confirmCb = null; }
+};
+let saving = false;
+
+// ─── Estado local ───
+let E = {};
+function setOnline(ok) {
+  document.getElementById('dot').className = 'dot' + (ok ? '' : ' off');
+  document.getElementById('badge-txt').textContent = ok ? 'En línea · Sincronización activa' : 'Sin conexión';
+}
+
+// ─── NOTIF ───
+function notif(m, color) {
+  const n = document.getElementById('notif');
+  n.textContent = m;
+  n.style.background = color || '#1e40af';
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 2800);
+}
+
+// ─── ESCUCHAR FIREBASE EN TIEMPO REAL ───
+dbRef.on('value', (snap) => {
+  document.getElementById('loading').style.display = 'none';
+  setOnline(true);
+  E = snap.val() || {};
+  build();
+  actualizarFiltroUsuarios();
+  filtrar();
+  if (currentRol) aplicarRol();
+}, (err) => {
+  document.getElementById('loading').style.display = 'none';
+  setOnline(false);
+  notif('Error de conexión con Firebase', '#dc2626');
+  build();
+});
+
+// ─── GUARDAR EN FIREBASE ───
+function saveField(id, field, value) {
+  if (!E[id]) E[id] = {};
+  E[id][field] = value;
+  const patch = {};
+  patch[id + '/' + field] = value;
+  dbRef.update(patch).catch(() => notif('Error al guardar', '#dc2626'));
+}
+
+// ─── UI HELPERS ───
+function rowStyle(id) {
+  const r = document.getElementById('r_' + id);
+  if (!r) return;
+  const s = E[id] || {};
+  r.classList.toggle('sub-ok', !!s.ok);
+  const t = r.querySelector('.obs-t');
+  if (t) t.classList.toggle('obs-tacha', !!s.ok);
+}
+
+function updStats() {
+  const vis = DATA.filter(o => {
+    const r = document.getElementById('r_' + o.id);
+    return r && !r.classList.contains('oculto');
+  });
+  let sub = 0, eval_ = 0;
+  vis.forEach(o => {
+    const s = E[o.id] || {};
+    if (s.ok) sub++;
+    if (s.eval_v === 'conforme' || s.eval_v === 'reitera') eval_++;
+  });
+  document.getElementById('ct').textContent = vis.length;
+  document.getElementById('cs').textContent = sub;
+  document.getElementById('cp').textContent = vis.length - sub;
+  document.getElementById('ce').textContent = eval_;
+}
+
+// ─── CONSTRUIR TABLA ───
+const SCOLS = {
+  'PLANOS': '#1a4f8a',
+  'MEMORIA DE CÁLCULO': '#1a6a4a',
+  'MEMORIA DESCRIPTIVA': '#7a4a1a',
+  'ESPECIFICACIONES TÉCNICAS': '#6a1a6a'
+};
+
+function build() {
+  const secs = {};
+  DATA.forEach(o => {
+    if (!secs[o.section]) secs[o.section] = {};
+    const sk = o.subsection || '__';
+    if (!secs[o.section][sk]) secs[o.section][sk] = [];
+    secs[o.section][sk].push(o);
+  });
+  let h = '';
+  for (const [sec, subs] of Object.entries(secs)) {
+    const tot = Object.values(subs).flat().length;
+    const c = SCOLS[sec] || '#1a4f8a';
+    h += `<div class="seccion" data-sec="${sec}">
+    <div class="sec-hdr" style="background:${c}"><span>📂 ${sec}</span><span class="ss">${tot} observaciones</span></div>
+    <div class="tabla-wrap"><table>
+    <thead><tr>
+      <th class="c-num">#</th><th class="c-obs">OBSERVACIÓN / BITÁCORA</th>
+      <th class="c-est">SUBSANADO</th><th class="c-res">RESPONSABLE</th>
+      <th class="c-fec">FECHA LEVANT.</th><th class="c-com">COMENTARIO</th>
+      <th class="c-eval" style="background:#fffbeb;color:#92400e;min-width:200px">EVALUADOR</th>
+      <th class="c-fec-eval" style="background:#fffbeb;color:#92400e;width:110px">FECHA REVISIÓN</th>
+      <th class="c-obs2" style="background:#fdf4ff;color:#7c3aed;min-width:220px">OBSERVACIÓN 2</th>
+    </tr></thead><tbody>`;
+    for (const [sub, obs] of Object.entries(subs)) {
+      if (sub !== '__') h += `<tr class="sr"><td colspan="6"><div class="sub-hdr">🔹 ${sub}</div></td></tr>`;
+      obs.forEach(o => h += buildRow(o));
+    }
+    h += `</tbody></table></div></div>`;
+  }
+  document.getElementById('cont').innerHTML = h;
+  DATA.forEach(o => rowStyle(o.id));
+  updStats();
+}
+
+function buildRow(o) {
+  const s = E[o.id] || {};
+  const ck = s.ok ? 'checked' : '';
+  const rv = (s.resp || '').replace(/"/g, '&quot;');
+  const cv = (s.coment || '').replace(/</g, '&lt;');
+  const ev = (s.eval_coment || '').replace(/</g, '&lt;');
+  const imgs = s.imgs || [];
+  const eimgs = s.eval_imgs || [];
+
+  // Bitácora de cambios
+  const log = s.log || [];
+  const bitHtml = log.length ? `<div class="bitacora">${
+    log.slice(-3).map(l => `<div class="${l.a==='SUB'?'bit-sub':'bit-rev'}">
+      ${l.a==='SUB'?'✔ Subsanado':'✖ Revertido'} por <b>${l.u}</b> — ${l.f}
+    </div>`).join('')
+  }</div>` : '';
+
+  const imgsHtml = imgs.map((src,i) => `
+    <div class="com-img-wrap">
+      <img src="${src}" onclick="verImg('${o.id}',${i},'u')" title="Clic para ampliar">
+      <button class="com-img-del" onclick="delImg('${o.id}',${i},'u')" title="Eliminar">✕</button>
+    </div>`).join('');
+
+  const eimgsHtml = eimgs.map((src,i) => `
+    <div class="com-img-wrap">
+      <img src="${src}" onclick="verImg('${o.id}',${i},'e')" title="Clic para ampliar">
+      <button class="com-img-del" onclick="delImg('${o.id}',${i},'e')" title="Eliminar">✕</button>
+    </div>`).join('');
+
+  // Historial de rondas anteriores
+  const historial = s.historial || [];
+  const histHtml = historial.map((h, i) => `
+    <div class="rev-block">
+      <span class="rev-title">📋 REVISIÓN ${h.ronda} — ${h.eval_v === 'reitera' ? '<span style="color:#c0392b">SE REITERÓ</span>' : '<span style="color:#1a7a45">CONFORME</span>'}</span>
+      <div style="font-size:11px;color:#374151;margin:3px 0">
+        <b>Proyectista:</b> ${h.resp||'—'} &nbsp;|&nbsp; <b>Fecha:</b> ${h.fecha||'—'}
+      </div>
+      ${h.coment ? `<div style="font-size:11px;color:#6b7280;font-style:italic">"${h.coment}"</div>` : ''}
+      <div style="font-size:11px;color:#92400e;margin-top:3px">
+        <b>Evaluador:</b> ${h.eval_nombre||'—'} &nbsp;|&nbsp; ${h.eval_fecha||'—'}
+      </div>
+      ${h.eval_coment ? `<div style="font-size:11px;color:#92400e;font-style:italic">"${h.eval_coment}"</div>` : ''}
+    </div>`).join('');
+
+  return `<tr id="r_${o.id}" data-sec="${o.section}" data-obs="${o.obs.toLowerCase()}" data-resp="${(s.resp||'').toLowerCase()}" data-fecha="${s.fecha||''}">
+    <td class="c-num">${o.num}${historial.length ? `<br><span style="font-size:9px;color:#d97706;font-weight:700">R${historial.length+1}</span>` : ''}</td>
+    <td class="c-obs">
+      <span class="obs-t">${o.obs}</span>
+      ${histHtml}
+      ${bitHtml}
+    </td>
+    <td class="c-est">
+      <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+        <label class="sw"><input type="checkbox" ${ck} onchange="window._tog('${o.id}',this.checked)"><span class="sl"></span></label>
+        <span class="elbl ${s.ok?'ok':'pend'}" id="lbl_${o.id}">${s.ok?'✅':'⏳'}</span>
+      </div>
+    </td>
+    <td class="c-res"><input class="inp-r" type="text" value="${rv}" placeholder="Nombre..." onblur="window._sf('${o.id}','resp',this.value)"></td>
+    <td class="c-fec"><input class="inp-f" type="date" value="${s.fecha||''}" onchange="window._sf('${o.id}','fecha',this.value)" style="cursor:pointer"></td>
+    <td class="c-com">
+      <div class="com-cell">
+        <textarea class="com-text" placeholder="Comentario… o pega captura con Ctrl+V"
+          onblur="window._sf('${o.id}','coment',this.value)"
+          onpaste="window._paste(event,'${o.id}','u')">${cv}</textarea>
+        <div class="paste-hint">📸 Ctrl+V para pegar captura</div>
+        <div class="com-imgs" id="imgs_${o.id}">${imgsHtml}</div>
+      </div>
+    </td>
+    <td class="c-eval">
+      <div class="eval-cell">
+        <div class="eval-veredicto">
+          <button class="btn-eval ${s.eval_v==='conforme'?'ev-conf-act':'ev-conf'}"
+            data-v="conforme" onclick="window._evalV('${o.id}','conforme')">✔ CONFORME</button>
+          <button class="btn-eval ${s.eval_v==='reitera'?'ev-reit-act':'ev-reit'}"
+            data-v="reitera" onclick="window._evalV('${o.id}','reitera')">↩ SE REITERA</button>
+        </div>
+        ${s.eval_nombre ? `<div class="eval-info"><span style="font-size:10px;color:#92400e;font-weight:600">Por: ${s.eval_nombre}</span></div>` : ''}
+        <textarea class="com-text" placeholder="Comentario evaluador… o Ctrl+V"
+          onblur="window._sf('${o.id}','eval_coment',this.value)"
+          onpaste="window._paste(event,'${o.id}','e')">${ev}</textarea>
+        <div class="paste-hint">📸 Ctrl+V para pegar captura</div>
+        <div class="com-imgs" id="eimgs_${o.id}">${eimgsHtml}</div>
+      </div>
+    </td>
+    <td class="c-fec-eval" style="background:rgba(255,248,220,.3);font-size:11px;color:#92400e;font-weight:600;text-align:center;vertical-align:middle">
+      ${s.eval_fecha ? s.eval_fecha.replace(' ','\n') : '—'}
+    </td>
+    <td class="c-obs2" style="background:rgba(253,244,255,.4);vertical-align:top;padding:8px">
+      ${s.eval_v === 'reitera' ? buildObs2(o.id, o.obs, s) : '<span style="font-size:11px;color:#d1d5db">—</span>'}
+    </td>
+  </tr>`;
+}
+
+// ─── OBSERVACIÓN 2 ───
+function buildObs2(id, obsOriginal, s) {
+  const obs2 = s.obs2 || '';
+  const tieneObs2 = !!obs2;
+  if (tieneObs2) {
+    return `<div>
+      <span style="font-size:10px;font-weight:700;color:#7c3aed;background:#f3e8ff;padding:2px 8px;border-radius:10px">↩ NUEVA OBSERVACIÓN</span>
+      <div style="font-size:12px;color:#374151;margin-top:5px;line-height:1.4">${obs2}</div>
+      ${currentRol === 'evaluador' ? `<button onclick="window.editarObs2('${id}','${obsOriginal.replace(/'/g,"\\'")}')" style="margin-top:4px;font-size:10px;color:#7c3aed;background:none;border:1px solid #7c3aed;border-radius:6px;padding:2px 8px;cursor:pointer">✏️ Editar</button>` : ''}
+    </div>`;
+  }
+  // Solo el evaluador puede agregar obs2
+  if (currentRol === 'evaluador') {
+    return `<button onclick="window.abrirModalObs2('${id}','${obsOriginal.replace(/'/g,"\\'")}')" 
+      style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:6px 12px;font-size:11px;font-weight:700;cursor:pointer;width:100%">
+      + Agregar Observación 2
+    </button>`;
+  }
+  return `<span style="font-size:11px;color:#7c3aed;font-style:italic">Pendiente del evaluador…</span>`;
+}
+
+// Modal para obs2
+window.abrirModalObs2 = function(id, obsOriginal) {
+  // Crear modal dinámico
+  let m = document.getElementById('obs2-modal');
+  if (!m) {
+    m = document.createElement('div');
+    m.id = 'obs2-modal';
+    m.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:700;display:flex;align-items:center;justify-content:center';
+    m.innerHTML = `<div style="background:white;border-radius:16px;padding:28px 32px;width:420px;box-shadow:0 20px 60px rgba(0,0,0,.3)">
+      <h3 style="color:#7c3aed;font-size:16px;margin-bottom:6px">Observación 2</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:16px">¿Copiar la observación original o escribir una nueva?</p>
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <button id="obs2-copiar" style="flex:1;background:#7c3aed;color:white;border:none;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">📋 Copiar original</button>
+        <button id="obs2-nueva" style="flex:1;background:white;color:#7c3aed;border:2px solid #7c3aed;border-radius:8px;padding:10px;font-size:13px;font-weight:700;cursor:pointer">✏️ Escribir nueva</button>
+      </div>
+      <textarea id="obs2-texto" style="width:100%;border:2px solid #e5e7eb;border-radius:8px;padding:10px;font-size:13px;min-height:80px;resize:vertical;font-family:inherit;display:none" placeholder="Escribe la nueva observación..."></textarea>
+      <div style="display:flex;gap:10px;margin-top:14px;justify-content:flex-end">
+        <button id="obs2-cancelar" style="background:#f3f4f6;color:#6b7280;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">Cancelar</button>
+        <button id="obs2-guardar" style="background:#7c3aed;color:white;border:none;border-radius:8px;padding:9px 20px;font-size:13px;font-weight:700;cursor:pointer">Guardar</button>
+      </div>
+    </div>`;
+    document.body.appendChild(m);
+  }
+  m.style.display = 'flex';
+  const txt = document.getElementById('obs2-texto');
+  txt.style.display = 'none';
+  txt.value = '';
+  document.getElementById('obs2-copiar').onclick = () => {
+    txt.value = obsOriginal;
+    txt.style.display = 'block';
+    txt.focus();
+  };
+  document.getElementById('obs2-nueva').onclick = () => {
+    txt.value = '';
+    txt.style.display = 'block';
+    txt.focus();
+  };
+  document.getElementById('obs2-cancelar').onclick = () => { m.style.display = 'none'; };
+  document.getElementById('obs2-guardar').onclick = () => {
+    const val = txt.value.trim();
+    if (!val) { notif('Escribe o copia la observación primero', '#991b1b'); return; }
+    saveField(id, 'obs2', val);
+    if (!E[id]) E[id] = {};
+    E[id].obs2 = val;
+    m.style.display = 'none';
+    // Actualizar celda sin rebuild completo
+    const cell = document.querySelector(`#r_${id} .c-obs2`);
+    if (cell) cell.innerHTML = buildObs2(id, obsOriginal, E[id]);
+    notif('Observación 2 guardada', '#7c3aed');
+  };
+};
+
+window.editarObs2 = function(id, obsOriginal) {
+  if (!E[id]) E[id] = {};
+  const actual = E[id].obs2 || '';
+  E[id].obs2 = '';
+  saveField(id, 'obs2', '');
+  window.abrirModalObs2(id, obsOriginal);
+  setTimeout(() => {
+    const txt = document.getElementById('obs2-texto');
+    if (txt) { txt.value = actual; txt.style.display = 'block'; }
+  }, 100);
+};
+
+// ─── MODO OSCURO ───
+window.toggleDark = function() {
+  document.body.classList.toggle('dark');
+  const isDark = document.body.classList.contains('dark');
+  localStorage.setItem('imc_dark', isDark ? '1' : '0');
+  document.getElementById('btn-dark').textContent = isDark ? '☀️' : '🌙';
+};
+// Aplicar al cargar
+if (localStorage.getItem('imc_dark') === '1') {
+  document.body.classList.add('dark');
+  const btn = document.getElementById('btn-dark');
+  if (btn) btn.textContent = '☀️';
+}
+window._tog = async function(id, v) {
+  if (!v) {
+    const chk = document.querySelector(`#r_${id} input[type=checkbox]`);
+    if (chk) chk.checked = true;
+    const ok = await pedirConfirm(
+      '¿Quitar subsanado?',
+      'Esta observación ya estaba marcada como subsanada. ¿Deseas revertirla a PENDIENTE?'
+    );
+    if (!ok) return;
+    if (chk) chk.checked = false;
+  }
+  saveField(id, 'ok', v);
+
+  // ─ BITÁCORA: registrar quién, qué acción y cuándo ─
+  const ahora = new Date();
+  const fechaHora = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE', {hour:'2-digit',minute:'2-digit'});
+  const logEntry = { u: currentUser || 'Desconocido', a: v ? 'SUB' : 'REV', f: fechaHora };
+  if (!E[id]) E[id] = {};
+  const logActual = E[id].log || [];
+  logActual.push(logEntry);
+  E[id].log = logActual;
+  saveField(id, 'log', logActual);
+
+  // Auto-completar responsable y fecha si se subsana
+  if (currentUser) {
+    saveField(id, 'resp', currentUser);
+    const hoy = ahora.toISOString().slice(0,10);
+    if (v) saveField(id, 'fecha', hoy);
+    const inp = document.querySelector(`#r_${id} .inp-r`);
+    if (inp && v) inp.value = currentUser;
+    const fec = document.querySelector(`#r_${id} .inp-f`);
+    if (fec && v) fec.value = hoy;
+    // Actualizar data-resp y data-fecha para filtros
+    const row = document.getElementById('r_' + id);
+    if (row) {
+      row.dataset.resp = currentUser.toLowerCase();
+      if (v) row.dataset.fecha = hoy;
+    }
+  }
+
+  rowStyle(id);
+  const l = document.getElementById('lbl_' + id);
+  if (l) { l.textContent = v ? '✅' : '⏳'; l.className = 'elbl ' + (v ? 'ok' : 'pend'); }
+
+  // Actualizar bitácora en UI sin rebuild completo
+  const obsCell = document.querySelector(`#r_${id} .c-obs`);
+  if (obsCell) {
+    let bit = obsCell.querySelector('.bitacora');
+    if (!bit) { bit = document.createElement('div'); bit.className = 'bitacora'; obsCell.appendChild(bit); }
+    const visibles = logActual.slice(-3);
+    bit.innerHTML = visibles.map(l => `<div class="${l.a==='SUB'?'bit-sub':'bit-rev'}">
+      ${l.a==='SUB'?'✔ Subsanado':'✖ Revertido'} por <b>${l.u}</b> — ${l.f}</div>`).join('');
+  }
+
+  // Actualizar lista de usuarios en filtro
+  actualizarFiltroUsuarios();
+  notif(v ? 'Subsanado registrado' : 'Revertido a pendiente', v ? '#166534' : '#991b1b');
+  updStats();
+};
+
+window._sf = function(id, f, v) {
+  if (!E[id]) E[id] = {};
+  if (E[id][f] === v) return;
+  saveField(id, f, v);
+  notif('Guardado', '#1e40af');
+};
+
+// ─── VEREDICTO EVALUADOR ───
+window._evalV = async function(id, v) {
+  if (currentRol !== 'evaluador') {
+    notif('Solo el evaluador puede marcar esto', '#991b1b'); return;
+  }
+  const actual = (E[id] || {}).eval_v;
+  const nuevo  = actual === v ? '' : v;
+  if (actual && !nuevo) {
+    const ok = await pedirConfirm('¿Quitar veredicto?',
+      `¿Deseas quitar "${actual==='conforme'?'CONFORME':'SE REITERA'}" de esta observación?`);
+    if (!ok) return;
+  }
+  saveField(id, 'eval_v', nuevo);
+  // Fecha y hora automática del evaluador
+  const ahora = new Date();
+  const fechaHora = ahora.toLocaleDateString('es-PE') + ' ' + ahora.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+  saveField(id, 'eval_fecha', nuevo ? fechaHora : '');
+  saveField(id, 'eval_nombre', nuevo ? currentUser : '');
+  if (!E[id]) E[id] = {};
+  E[id].eval_fecha  = nuevo ? fechaHora : '';
+  E[id].eval_nombre = nuevo ? currentUser : '';
+  // Registrar en bitácora evaluador
+  const logE = E[id].log_eval || [];
+  if (nuevo) logE.push({ u: currentUser, a: nuevo, f: fechaHora });
+  E[id].log_eval = logE;
+  saveField(id, 'log_eval', logE);
+  // Actualizar botones UI
+  const row = document.getElementById('r_' + id);
+  if (row) {
+    row.querySelectorAll('.btn-eval').forEach(b => {
+      const bv = b.getAttribute('data-v');
+      b.className = 'btn-eval ' + (nuevo===bv ? (bv==='conforme'?'ev-conf-act':'ev-reit-act') : (bv==='conforme'?'ev-conf':'ev-reit'));
+    });
+    // Mostrar/ocultar info de quien revisó
+    let infoEl = row.querySelector('.eval-info');
+    if (!infoEl) {
+      infoEl = document.createElement('div');
+      infoEl.className = 'eval-info';
+      row.querySelector('.eval-cell').appendChild(infoEl);
+    }
+    infoEl.innerHTML = nuevo
+      ? `<span style="font-size:10px;color:#92400e;font-weight:600">Revisado por: ${currentUser}<br>${fechaHora}</span>`
+      : '';
+  }
+  notif(nuevo==='conforme'?'Marcado CONFORME':nuevo==='reitera'?'Marcado SE REITERA':'Veredicto quitado',
+    nuevo==='conforme'?'#166534':nuevo==='reitera'?'#991b1b':'#6b7280');
+};
+
+// ─── FILTROS RAPIDOS ───
+window.filtroRapido = function(tipo) {
+  document.getElementById('fq-todos').classList.toggle('act', tipo==='todos');
+  document.getElementById('fq-sub').classList.toggle('act', tipo==='sub');
+  document.getElementById('fq-pend').classList.toggle('act', tipo==='pend');
+  window.filtrar();
+};
+
+// ─── PEGAR IMAGEN ───
+window._paste = function(e, id, tipo) {
+  const items = e.clipboardData && e.clipboardData.items;
+  if (!items) return;
+  for (let i = 0; i < items.length; i++) {
+    if (items[i].type.indexOf('image') !== -1) {
+      e.preventDefault();
+      const file = items[i].getAsFile();
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement('canvas');
+          const MAX = 800;
+          let w = img.width, h = img.height;
+          if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          const compressed = canvas.toDataURL('image/jpeg', 0.7);
+          if (!E[id]) E[id] = {};
+          const campo = tipo === 'e' ? 'eval_imgs' : 'imgs';
+          const wrapId = tipo === 'e' ? 'eimgs_' + id : 'imgs_' + id;
+          if (!E[id][campo]) E[id][campo] = [];
+          E[id][campo].push(compressed);
+          saveField(id, campo, E[id][campo]);
+          const wrap = document.getElementById(wrapId);
+          if (wrap) {
+            const idx = E[id][campo].length - 1;
+            const div = document.createElement('div');
+            div.className = 'com-img-wrap';
+            div.innerHTML = `<img src="${compressed}" onclick="verImg('${id}',${idx},'${tipo}')" title="Clic para ampliar">
+              <button class="com-img-del" onclick="delImg('${id}',${idx},'${tipo}')" title="Eliminar">✕</button>`;
+            wrap.appendChild(div);
+          }
+          notif('Captura guardada', '#166534');
+        };
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+      break;
+    }
+  }
+};
+
+// ─── VER IMAGEN GRANDE ───
+window.verImg = function(id, idx, tipo) {
+  const campo = tipo === 'e' ? 'eval_imgs' : 'imgs';
+  const src = (E[id] && E[id][campo] && E[id][campo][idx]);
+  if (!src) return;
+  document.getElementById('img-modal-src').src = src;
+  document.getElementById('img-modal').classList.add('open');
+};
+document.getElementById('img-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('open');
+});
+
+// ─── ELIMINAR IMAGEN ───
+window.delImg = function(id, idx, tipo) {
+  const campo = tipo === 'e' ? 'eval_imgs' : 'imgs';
+  const wrapId = tipo === 'e' ? 'eimgs_' + id : 'imgs_' + id;
+  if (!E[id] || !E[id][campo]) return;
+  E[id][campo].splice(idx, 1);
+  saveField(id, campo, E[id][campo]);
+  const wrap = document.getElementById(wrapId);
+  if (wrap) {
+    wrap.innerHTML = E[id][campo].map((src,i) => `
+      <div class="com-img-wrap">
+        <img src="${src}" onclick="verImg('${id}',${i},'${tipo}')" title="Clic para ampliar">
+        <button class="com-img-del" onclick="delImg('${id}',${i},'${tipo}')" title="Eliminar">✕</button>
+      </div>`).join('');
+  }
+  notif('Imagen eliminada', '#991b1b');
+};
+
+// ─── ACTUALIZAR FILTRO USUARIOS ───
+function actualizarFiltroUsuarios() {
+  const usuarios = new Set();
+  DATA.forEach(o => {
+    const s = E[o.id] || {};
+    if (s.resp) usuarios.add(s.resp);
+    (s.log || []).forEach(l => { if (l.u) usuarios.add(l.u); });
+  });
+  const sel = document.getElementById('fu');
+  const actual = sel.value;
+  sel.innerHTML = '<option value="">Todos</option>';
+  [...usuarios].sort().forEach(u => {
+    const op = document.createElement('option');
+    op.value = u.toLowerCase(); op.textContent = u;
+    if (u.toLowerCase() === actual) op.selected = true;
+    sel.appendChild(op);
+  });
+}
+
+// ─── EXPORTAR PDF ───
+window.exportarPDF = async function() {
+  notif('Generando PDF...', '#1e40af');
+
+  if (!window.jspdf) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+  const fecha = new Date().toLocaleDateString('es-PE');
+  const W = doc.internal.pageSize.getWidth();   // 297mm
+  const PAGE_H = doc.internal.pageSize.getHeight(); // 210mm
+  const MARGIN = 8;
+  const INNER  = W - MARGIN * 2;  // 281mm
+
+  // ── COLORES ──
+  const AZUL   = [26, 79, 138];
+  const VERDE  = [26, 122, 69];
+  const ROJO   = [192, 57, 43];
+  const GRIS   = [107, 114, 128];
+  const BLANCO = [255, 255, 255];
+  const FVERDE = [230, 247, 237];
+  const FROJO  = [253, 236, 234];
+
+  // ── COLUMNAS — anchos en mm, suman INNER (281) ──
+  const hayImgs = DATA.some(o => (E[o.id]||{}).imgs && E[o.id].imgs.length > 0);
+  // [etiqueta, ancho, alineación]
+  const cols = hayImgs
+    ? [ ['#',8,'c'], ['OBSERVACION',90,'l'], ['ESTADO',28,'l'],
+        ['RESPONSABLE',35,'l'], ['FECHA',25,'l'], ['COMENTARIO',55,'l'], ['CAPTURA',40,'l'] ]
+    : [ ['#',8,'c'], ['OBSERVACION',110,'l'], ['ESTADO',28,'l'],
+        ['RESPONSABLE',38,'l'], ['FECHA',25,'l'], ['COMENTARIO',72,'l'] ];
+
+  // ── HEADER PRIMERA PÁGINA ──
+  doc.setFillColor(...AZUL);
+  doc.rect(0, 0, W, 18, 'F');
+  doc.setFontSize(11); doc.setTextColor(...BLANCO); doc.setFont('helvetica','bold');
+  doc.text('FICHA DE OBSERVACIONES N01 - INSTALACIONES SANITARIAS', W/2, 8, {align:'center'});
+  doc.setFontSize(7); doc.setFont('helvetica','normal');
+  doc.text(`I.E. PUBLICA MILITAR "INCA MANCO CAPAC" - TOTORANI - PUNO  |  Rev. 01: 15.10.25  |  Generado: ${fecha}`, W/2, 14, {align:'center'});
+
+  // ── STATS ──
+  const total = DATA.length;
+  const sub   = DATA.filter(o => (E[o.id]||{}).ok).length;
+  const pend  = total - sub;
+  const pct   = Math.round(sub/total*100);
+  doc.setFillColor(235,244,255);
+  doc.rect(MARGIN, 20, INNER, 9, 'F');
+  doc.setFontSize(9); doc.setFont('helvetica','bold');
+  doc.setTextColor(...AZUL);  doc.text(`TOTAL: ${total}`, MARGIN+5, 26);
+  doc.setTextColor(...VERDE); doc.text(`SUBSANADOS: ${sub}`, MARGIN+55, 26);
+  doc.setTextColor(...ROJO);  doc.text(`PENDIENTES: ${pend}`, MARGIN+120, 26);
+  doc.setTextColor(50,50,50); doc.setFont('helvetica','normal');
+  doc.text(`Progreso: ${pct}%`, MARGIN+190, 26);
+
+  let y = 31;
+
+  // ── FUNCIONES AUXILIARES ──
+  function miniHeader() {
+    doc.setFillColor(...AZUL);
+    doc.rect(0,0,W,9,'F');
+    doc.setFontSize(7); doc.setTextColor(...BLANCO); doc.setFont('helvetica','bold');
+    doc.text('FICHA OBSERVACIONES - INCA MANCO CAPAC', W/2, 6.5, {align:'center'});
+    y = 12;
+  }
+
+  function drawColHeaders() {
+    doc.setFillColor(225,232,240);
+    doc.rect(MARGIN, y, INNER, 6, 'F');
+    // lineas verticales
+    doc.setDrawColor(180,190,200); doc.setLineWidth(0.2);
+    let cx = MARGIN;
+    cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+6); });
+    doc.setFontSize(6.5); doc.setTextColor(...GRIS); doc.setFont('helvetica','bold');
+    let x = MARGIN;
+    cols.forEach(([label, w, align]) => {
+      const tx = align==='c' ? x+w/2 : x+1.5;
+      doc.text(label, tx, y+4.3, {align: align==='c'?'center':'left', maxWidth: w-2});
+      x += w;
+    });
+    y += 6;
+  }
+
+  // Texto con clip para no salir de celda
+  function cellText(txt, cx, cy, cw, ch, opts={}) {
+    if (!txt) return;
+    const lines = doc.splitTextToSize(String(txt), cw - 3);
+    const lineH = 3.4;
+    const maxLines = Math.floor((ch - 2) / lineH);
+    const visible = lines.slice(0, maxLines);
+    doc.text(visible, cx + (opts.center ? cw/2 : 1.5), cy + 3.8,
+      { align: opts.center ? 'center' : 'left' });
+  }
+
+  let lastSec = null;
+  let lastSub = null;
+
+  for (const o of DATA) {
+    const s = E[o.id] || {};
+    const imgs = s.imgs || [];
+
+    // Calcular altura fila
+    const obsW  = cols[1][1] - 3;
+    const comW  = cols[hayImgs?5:5][1] - 3;
+    const obsL  = doc.splitTextToSize(o.obs, obsW).length;
+    const comL  = doc.splitTextToSize(s.coment||'', comW).length;
+    const textH = Math.max(obsL, comL, 1) * 3.4 + 4;
+    const imgH  = imgs.length > 0 ? 28 : 0;
+    const rowH  = Math.min(Math.max(textH, imgH, 9), 45); // max 45mm por fila
+
+    // Nueva seccion
+    if (o.section !== lastSec) {
+      if (y + 20 > PAGE_H - 8) { doc.addPage(); miniHeader(); }
+      const secColors = {
+        'PLANOS':[26,79,138],
+        'MEMORIA DE CALCULO':[26,106,74],
+        'MEMORIA DESCRIPTIVA':[122,74,26],
+        'ESPECIFICACIONES TECNICAS':[106,26,106]
+      };
+      const sc = secColors[o.section.normalize('NFD').replace(/[\u0300-\u036f]/g,'')] || AZUL;
+      doc.setFillColor(...sc);
+      doc.rect(MARGIN, y, INNER, 7, 'F');
+      doc.setFontSize(8.5); doc.setFont('helvetica','bold'); doc.setTextColor(...BLANCO);
+      doc.text(`SECCION: ${o.section}`, MARGIN+3, y+5);
+      y += 7; lastSec = o.section; lastSub = null;
+      drawColHeaders();
+    }
+
+    // Nueva subseccion
+    if (o.subsection && o.subsection !== lastSub) {
+      if (y + 12 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
+      doc.setFillColor(219,234,254);
+      doc.rect(MARGIN, y, INNER, 5.5, 'F');
+      doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...AZUL);
+      doc.text(`  ${o.subsection}`, MARGIN+2, y+4);
+      y += 5.5; lastSub = o.subsection;
+    }
+
+    // Nueva pagina si no cabe la fila
+    if (y + rowH + 5 > PAGE_H - 8) { doc.addPage(); miniHeader(); drawColHeaders(); }
+
+    // Fondo fila
+    doc.setFillColor(...(s.ok ? FVERDE : FROJO));
+    doc.rect(MARGIN, y, INNER, rowH, 'F');
+
+    // Lineas verticales de columnas
+    doc.setDrawColor(200,210,220); doc.setLineWidth(0.15);
+    let cx = MARGIN;
+    cols.forEach(([,w]) => { cx+=w; doc.line(cx, y, cx, y+rowH); });
+
+    // Borde inferior fila
+    doc.setDrawColor(190,200,210); doc.setLineWidth(0.25);
+    doc.line(MARGIN, y+rowH, MARGIN+INNER, y+rowH);
+
+    // ── CONTENIDO CELDAS ──
+    doc.setFontSize(7.5); doc.setFont('helvetica','normal');
+    doc.setTextColor(31,41,55);
+    let x = MARGIN;
+
+    // # numero
+    doc.setFont('helvetica','bold');
+    doc.setTextColor(...AZUL);
+    cellText(o.num, x, y, cols[0][1], rowH, {center:true});
+    x += cols[0][1];
+
+    // Observacion
+    doc.setFont('helvetica','normal');
+    doc.setTextColor(31,41,55);
+    cellText(o.obs, x, y, cols[1][1], rowH);
+    x += cols[1][1];
+
+    // Estado — sin emoji, solo texto
+    doc.setFont('helvetica','bold');
+    if (s.ok) {
+      doc.setTextColor(...VERDE);
+      cellText('SUBSANADO', x, y, cols[2][1], rowH);
+    } else {
+      doc.setTextColor(...ROJO);
+      cellText('PENDIENTE', x, y, cols[2][1], rowH);
+    }
+    x += cols[2][1];
+
+    // Responsable
+    doc.setFont('helvetica','normal'); doc.setTextColor(31,41,55);
+    cellText(s.resp||'-', x, y, cols[3][1], rowH);
+    x += cols[3][1];
+
+    // Fecha
+    cellText(s.fecha||'-', x, y, cols[4][1], rowH);
+    x += cols[4][1];
+
+    // Comentario
+    cellText(s.coment||'', x, y, cols[5][1], rowH);
+    x += cols[5][1];
+
+    // Imagenes
+    if (hayImgs && imgs.length > 0) {
+      let ix = x + 1;
+      for (let i = 0; i < Math.min(imgs.length, 2); i++) {
+        try {
+          const iw = 18, ih = rowH - 2;
+          doc.addImage(imgs[i], 'JPEG', ix, y+1, iw, ih);
+          ix += iw + 1;
+        } catch(e) {}
+      }
+    }
+
+    y += rowH;
+  }
+
+  // ── PIE DE PAGINA en todas las paginas ──
+  const totalPages = doc.getNumberOfPages();
+  for (let p = 1; p <= totalPages; p++) {
+    doc.setPage(p);
+    doc.setFillColor(245,247,250);
+    doc.rect(0, PAGE_H-7, W, 7, 'F');
+    doc.setFontSize(6.5); doc.setTextColor(...GRIS); doc.setFont('helvetica','normal');
+    doc.text(`Pagina ${p} de ${totalPages}  |  Ficha Observaciones N01 - I.E. Inca Manco Capac`, W/2, PAGE_H-2.5, {align:'center'});
+  }
+
+  const fechaArchivo = new Date().toISOString().slice(0,10);
+  doc.save(`Observaciones_IncaMancoCapac_${fechaArchivo}.pdf`);
+  notif('PDF descargado correctamente', '#166534');
+};
+
+// ─── EXPORTAR EXCEL ───
+window.exportarExcel = async function() {
+  notif('⏳ Generando Excel…', '#1e40af');
+  // Cargar SheetJS dinámicamente
+  if (!window.XLSX) {
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  const rows = [['#', 'SECCIÓN', 'SUBSECCIÓN', 'OBSERVACIÓN', 'ESTADO', 'RESPONSABLE', 'FECHA LEVANTAMIENTO', 'COMENTARIO']];
+  DATA.forEach(o => {
+    const s = E[o.id] || {};
+    rows.push([
+      o.num,
+      o.section,
+      o.subsection || '',
+      o.obs,
+      s.ok ? 'SUBSANADO' : 'PENDIENTE',
+      s.resp || '',
+      s.fecha || '',
+      s.coment || ''
+    ]);
+  });
+  const wb = XLSX.utils.book_new();
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  // Ancho de columnas
+  ws['!cols'] = [
+    {wch:5},{wch:22},{wch:28},{wch:70},
+    {wch:12},{wch:20},{wch:18},{wch:40}
+  ];
+  // Estilo header (fila 1)
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let C = range.s.c; C <= range.e.c; C++) {
+    const cell = ws[XLSX.utils.encode_cell({r:0, c:C})];
+    if (cell) cell.s = { font:{bold:true}, fill:{fgColor:{rgb:'1A4F8A'}}, font:{bold:true,color:{rgb:'FFFFFF'}} };
+  }
+  XLSX.utils.book_append_sheet(wb, ws, 'Observaciones');
+  const fecha = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `Observaciones_IncaMancoCapac_${fecha}.xlsx`);
+  notif('✅ Excel descargado', '#166534');
+};
+
+window.filtrar = function() {
+  const sec  = document.getElementById('fs').value;
+  const usr  = document.getElementById('fu').value.toLowerCase();
+  const ff   = document.getElementById('ff').value;
+  const txt  = document.getElementById('ft').value.toLowerCase().trim();
+  // Estado viene de los botones rápidos
+  const est  = document.getElementById('fq-sub').classList.contains('act') ? 'sub'
+             : document.getElementById('fq-pend').classList.contains('act') ? 'pend' : '';
+
+  const hoy    = new Date(); hoy.setHours(0,0,0,0);
+  const lunes  = new Date(hoy); lunes.setDate(hoy.getDate() - hoy.getDay() + 1);
+  const mesIni = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+
+  document.querySelectorAll('tr[id^="r_"]').forEach(r => {
+    const id    = r.id.replace('r_', '');
+    const s     = E[id] || {};
+    const isSub = !!s.ok;
+    const resp  = (r.dataset.resp || '').toLowerCase();
+    const fStr  = r.dataset.fecha || s.fecha || '';
+
+    let show = true;
+    if (sec && r.dataset.sec !== sec) show = false;
+    if (est === 'sub'  && !isSub) show = false;
+    if (est === 'pend' && isSub)  show = false;
+    if (usr && resp !== usr) show = false;
+    if (txt && !(r.dataset.obs || '').includes(txt)) show = false;
+
+    if (ff && fStr) {
+      const fDate = new Date(fStr + 'T00:00:00');
+      if (ff === 'hoy'    && fDate < hoy)    show = false;
+      if (ff === 'semana' && fDate < lunes)  show = false;
+      if (ff === 'mes'    && fDate < mesIni) show = false;
+    } else if (ff && !fStr) {
+      show = false;
+    }
+
+    r.classList.toggle('oculto', !show);
+  });
+
+  document.querySelectorAll('.sr').forEach(h => {
+    let sib = h.nextElementSibling, allH = true;
+    while (sib && !sib.classList.contains('sr')) {
+      if (!sib.classList.contains('oculto')) { allH = false; break; }
+      sib = sib.nextElementSibling;
+    }
+    h.classList.toggle('oculto', allH);
+  });
+  updStats();
+};
+window.limFil = function() {
+  document.getElementById('fs').value = '';
+  document.getElementById('fu').value = '';
+  document.getElementById('ff').value = '';
+  document.getElementById('ft').value = '';
+  document.getElementById('fq-todos').classList.add('act');
+  document.getElementById('fq-sub').classList.remove('act');
+  document.getElementById('fq-pend').classList.remove('act');
+  window.filtrar();
+};
+
+window.addEventListener('scroll', () => {
+  document.getElementById('stb').style.display = window.scrollY > 300 ? 'block' : 'none';
+});
+</script>
+</body>
+</html>
